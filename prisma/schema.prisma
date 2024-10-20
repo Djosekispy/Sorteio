@@ -1,0 +1,142 @@
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id                BigInt    @id @default(autoincrement())
+  nome_completo     String
+  data_nascimento   DateTime
+  email             String    @unique
+  telefone          String    @unique
+  endereco          String
+  senha             String
+  foto_perfil       String
+  tipo_perfil       TipoPerfil @default(cliente)
+  sexo              String
+  estado_civil      String
+  numero_bilhete    String    @unique
+  documentos        Documento[]
+  sorteios          Sorteio[] @relation("OrganizadorSorteios")
+  inscricoes        Inscricao[]
+  reclamacoes       Reclamacao[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Inscricao {
+  id                 BigInt     @id @default(autoincrement())
+  usuarioId          BigInt
+  itemId             BigInt
+  estado_candidatura EstadoCandidatura @default(pendente)
+  usuario            Usuario   @relation(fields: [usuarioId], references: [id])
+  item               Item      @relation(fields: [itemId], references: [id])
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model Documento {
+  id                BigInt    @id @default(autoincrement())
+  bilheteUrl        String
+  nif               String
+  licenca           String
+  estado            EstadoDocumento @default(pendente)
+  usuarioId         BigInt
+  usuario           Usuario   @relation(fields: [usuarioId], references: [id])
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Administrador {
+  id          BigInt   @id @default(autoincrement())
+  nome        String
+  email       String   @unique
+  senha       String
+  telefone    String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Reclamacao {
+  id            BigInt    @id @default(autoincrement())
+  titulo        String
+  conteudo      String
+  usuarioId     BigInt
+  sorteioId     BigInt
+  usuario       Usuario   @relation(fields: [usuarioId], references: [id])
+  sorteio       Sorteio   @relation(fields: [sorteioId], references: [id])
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Sorteio {
+  id              BigInt     @id @default(autoincrement())
+  nome            String
+  data_realizacao DateTime
+  status          StatusSorteio @default(corrente)
+  organizadorId   BigInt
+  organizador     Usuario      @relation(fields: [organizadorId], references: [id], name: "OrganizadorSorteios")
+  politicas       String
+  categorias      Categoria[]
+  reclamacoes     Reclamacao[] 
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Item {
+  id              BigInt     @id @default(autoincrement())
+  nome            String
+  propriedades    Json
+  descricao       String
+  categoriaId     BigInt
+  categoria       Categoria  @relation(fields: [categoriaId], references: [id])
+  inscricoes      Inscricao[]
+
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model Categoria {
+  id              BigInt     @id @default(autoincrement())
+  nome            String
+  descricao       String
+  sorteioId       BigInt
+  sorteio         Sorteio    @relation(fields: [sorteioId], references: [id])
+  itens           Item[]
+
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+enum EstadoCandidatura {
+  aprovado
+  recusado
+  ganho
+  pendente
+}
+
+enum EstadoDocumento {
+  verificado
+  pendente
+}
+
+enum TipoPerfil {
+  cliente
+  sorteador
+}
+
+enum StatusSorteio {
+  corrente
+  cancelado
+  finalizado
+}
