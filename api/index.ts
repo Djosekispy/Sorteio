@@ -1,5 +1,5 @@
 import express from 'express'
-import { PORT } from '../src/config/variavel_de_ambiente.env'
+import { PORT } from '../src/config/variables.env'
 import rotasGerais from '../src/routes'
 
 const app = express()

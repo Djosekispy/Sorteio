@@ -10,16 +10,16 @@ datasource db {
 model Usuario {
   id                BigInt    @id @default(autoincrement())
   nome_completo     String
-  data_nascimento   DateTime
+  data_nascimento   DateTime?  
   email             String    @unique
   telefone          String    @unique
-  endereco          String
+  endereco          String?
   senha             String
-  foto_perfil       String
+  foto_perfil       String?
   tipo_perfil       TipoPerfil @default(cliente)
-  sexo              String
-  estado_civil      String
-  numero_bilhete    String    @unique
+  sexo              String?
+  estado_civil      String?
+  numero_bilhete    String?    @unique
   documentos        Documento[]
   sorteios          Sorteio[] @relation("OrganizadorSorteios")
   inscricoes        Inscricao[]
