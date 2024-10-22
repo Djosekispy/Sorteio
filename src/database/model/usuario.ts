@@ -4,7 +4,7 @@ import { IUsuario } from "../entities/IUsuario";
 
 
 class Usuario {
-  id?: bigint;
+  id?: number;
   nome_completo: string;
   data_nascimento?: Date;
   email: string;
@@ -14,7 +14,9 @@ class Usuario {
   foto_perfil?: string;
   tipo_perfil: TipoPerfil;
   sexo?: string;
+  token_acesso? : string;
   estado_civil?: string;
+  codigo_recuperacao? : number;
   numero_bilhete?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -55,7 +57,7 @@ class Usuario {
     return await prisma.usuario.create({ data: this });
   }
 
-  static async findById(id: bigint) {
+  static async findById(id: number) {
     return await prisma.usuario.findUnique({ where: { id } });
   }
 
@@ -67,11 +69,11 @@ class Usuario {
     return await prisma.usuario.findUnique({ where: { telefone } });
   }
 
-  static async update(id: bigint, data: Partial<Usuario>) {
+  static async update(id: number, data: Partial<Usuario>) {
     return await prisma.usuario.update({ where: { id }, data });
   }
 
-  static async delete(id: bigint) {
+  static async delete(id: number) {
     return await prisma.usuario.delete({ where: { id } });
   }
 }

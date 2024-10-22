@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Usuario {
-  id                BigInt    @id @default(autoincrement())
+  id                Int    @id @default(autoincrement())
   nome_completo     String
   data_nascimento   DateTime?  
   email             String    @unique
@@ -19,6 +19,8 @@ model Usuario {
   tipo_perfil       TipoPerfil @default(cliente)
   sexo              String?
   estado_civil      String?
+  token_acesso      String?
+  codigo_recuperacao Int?
   numero_bilhete    String?    @unique
   documentos        Documento[]
   sorteios          Sorteio[] @relation("OrganizadorSorteios")
@@ -30,9 +32,9 @@ model Usuario {
 }
 
 model Inscricao {
-  id                 BigInt     @id @default(autoincrement())
-  usuarioId          BigInt
-  itemId             BigInt
+  id                 Int     @id @default(autoincrement())
+  usuarioId          Int
+  itemId             Int
   estado_candidatura EstadoCandidatura @default(pendente)
   usuario            Usuario   @relation(fields: [usuarioId], references: [id])
   item               Item      @relation(fields: [itemId], references: [id])
@@ -42,12 +44,12 @@ model Inscricao {
 }
 
 model Documento {
-  id                BigInt    @id @default(autoincrement())
+  id                Int    @id @default(autoincrement())
   bilheteUrl        String
   nif               String
   licenca           String
   estado            EstadoDocumento @default(pendente)
-  usuarioId         BigInt
+  usuarioId         Int
   usuario           Usuario   @relation(fields: [usuarioId], references: [id])
 
   createdAt         DateTime  @default(now())
@@ -55,22 +57,24 @@ model Documento {
 }
 
 model Administrador {
-  id          BigInt   @id @default(autoincrement())
+  id          Int   @id @default(autoincrement())
   nome        String
   email       String   @unique
   senha       String
   telefone    String
+  token_acesso String?
+  codigo_recuperacao Int?
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model Reclamacao {
-  id            BigInt    @id @default(autoincrement())
+  id            Int    @id @default(autoincrement())
   titulo        String
   conteudo      String
-  usuarioId     BigInt
-  sorteioId     BigInt
+  usuarioId     Int
+  sorteioId     Int
   usuario       Usuario   @relation(fields: [usuarioId], references: [id])
   sorteio       Sorteio   @relation(fields: [sorteioId], references: [id])
 
@@ -79,11 +83,11 @@ model Reclamacao {
 }
 
 model Sorteio {
-  id              BigInt     @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
   nome            String
   data_realizacao DateTime
   status          StatusSorteio @default(corrente)
-  organizadorId   BigInt
+  organizadorId   Int
   organizador     Usuario      @relation(fields: [organizadorId], references: [id], name: "OrganizadorSorteios")
   politicas       String
   categorias      Categoria[]
@@ -94,11 +98,11 @@ model Sorteio {
 }
 
 model Item {
-  id              BigInt     @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
   nome            String
   propriedades    Json
   descricao       String
-  categoriaId     BigInt
+  categoriaId     Int
   categoria       Categoria  @relation(fields: [categoriaId], references: [id])
   inscricoes      Inscricao[]
 
@@ -107,10 +111,10 @@ model Item {
 }
 
 model Categoria {
-  id              BigInt     @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
   nome            String
   descricao       String
-  sorteioId       BigInt
+  sorteioId       Int
   sorteio         Sorteio    @relation(fields: [sorteioId], references: [id])
   itens           Item[]
 

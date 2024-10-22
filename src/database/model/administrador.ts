@@ -1,11 +1,13 @@
 import prisma from "../../config/database";
-import { IAdministrador } from "../entities/iAdministrador";
+import { IAdministrador } from "../entities/IAdministrador";
 
 class Administrador {
   id?: number;
   nome: string;
   email: string;
   senha: string;
+  token_acesso? : string;
+  codigo_recuperacao? : number;
   telefone: string;
   createdAt: Date;
   updatedAt: Date;
