@@ -7,7 +7,7 @@ export interface IUsuario {
     data_nascimento?: Date;
     email: string;
     telefone: string;
-    endereco: string;
+    endereco?: string;
     senha: string;
     foto_perfil?: string;
     tipo_perfil?: TipoPerfil;

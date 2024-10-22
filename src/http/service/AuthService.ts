@@ -39,9 +39,10 @@ class AuthService implements IAuthUser {
             return { error : 'Credenciais Inválidas'}
         }
         const token = await generateToken({ id : user.id})
+
         const dataToReturn = {
-            user : user,
-            token 
+            user : await Usuario.findByEmail(email),
+            token : token
         }
         return dataToReturn as LoginReturn
     } catch (error) {
@@ -59,13 +60,13 @@ class AuthService implements IAuthUser {
         await Usuario.update(getUserData.id,{ codigo_recuperacao : parseInt(code)})
         const content = `Vamos ajuda-lo a recuperar a sua conta, use o código : ${code}`
       const sendingEmail =  await  Mailer.SendEmail(email,'Reposição de Senha - SorteioApp',content)
-       if(sendingEmail.rejected){
-        throw new Error("E-mail não enviado");
+       if(!sendingEmail.accepted){
+        throw new Error("E-mail não enviado para - " + sendingEmail.envelope.to);
         
        }
        return await Usuario.findByEmail(email) as IUsuario
     } catch (error) {
-        return { error : 'Algo deu Errado : ' + error }
+        return { error : '' + error }
     }
  }
  async redefinirSenha(email : string, senha : string) : Promise<IUsuario | { error : string } >

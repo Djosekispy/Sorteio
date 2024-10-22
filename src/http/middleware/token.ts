@@ -13,7 +13,6 @@ async function generateToken(user: { id: number }) {
   const sessionId = generateSessionId();
   const generatedToken = jwt.sign({ id: user.id, sessionId }, JWT_SECRET as string, { expiresIn: '2h' });
   await  Usuario.update(user.id,{token_acesso : generatedToken})
-  
   return generatedToken;
 }
 
@@ -29,7 +28,7 @@ async function authenticateToken(req: Request, res: Response, next: NextFunction
 
     // Verifica se a sessão existe no banco de dados
     const sessionExists = await Usuario.findById(decoded.id);
-    if (!sessionExists?.token_acesso ) {
+    if (sessionExists?.token_acesso !== token ) {
       return res.status(403).json({ message: 'Token inválido ou sessão expirada' });
     }
 
@@ -55,7 +54,7 @@ async function renewToken(req: Request, res: Response) {
 
     // Gera um novo token e registra uma nova sessão
     const newToken = await generateToken({ id: decoded.id });
-    await Usuario.update(decoded.id,{token_acesso : newToken });
+    await Usuario.update(decoded.id,{token_acesso : String(newToken) });
 
     return res.status(201).json({ token: newToken });
   } catch (err) {
