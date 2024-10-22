@@ -1,9 +1,9 @@
-import { Router } from "express";
+import express from "express";
 import rotasDoCliente from "./client";
 
-const rotasGerais = Router()
+const rotasGerais = express.Router()
 
-rotasGerais.use('/client',rotasDoCliente)
+rotasGerais.use('/',rotasDoCliente)
 
 
 export default rotasGerais;

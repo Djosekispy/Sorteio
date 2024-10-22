@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import { generateToken } from "../middleware/token";
 import Mailer from "../utils/email";
 import { randomDigits } from "../utils/generateRandomNumber";
+
 class AuthService implements IAuthUser {
 
  async registrar(dados : IUsuario) : Promise<IUsuario | { error : string } >
@@ -80,6 +81,18 @@ class AuthService implements IAuthUser {
     } catch (error) {
         return { error : 'Algo de errado ' + error}
         
+    }
+ }
+ async sair(userId : number) : Promise<void | { error : string } >
+ {
+    try {
+        const user = await Usuario.findById(userId)
+        if(!user){
+            return { error : 'Usuário não existe!'}
+        }
+        await Usuario.update(userId,{token_acesso : ''})
+    } catch (error) {
+        return { error : 'Algo deu errado : ' + error }
     }
  }
 }

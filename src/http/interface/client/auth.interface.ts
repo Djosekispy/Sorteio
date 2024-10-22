@@ -7,6 +7,7 @@ interface IAuthUser {
     entrar(email : string, senha : string):Promise<LoginReturn | { error : string } >
     esqueceuSenha(email : string) : Promise<IUsuario | { error : string } >
     redefinirSenha(email : string, senha : string) : Promise<IUsuario | { error : string } >
+    sair(userId : number) : Promise<void | { error : string } >
 }
 
 interface LoginReturn {
