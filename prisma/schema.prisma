@@ -26,7 +26,7 @@ model Usuario {
   sorteios          Sorteio[] @relation("OrganizadorSorteios")
   inscricoes        Inscricao[]
   reclamacoes       Reclamacao[]
-
+  pedidos           Pedido[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 }
@@ -64,6 +64,16 @@ model Administrador {
   telefone    String
   token_acesso String?
   codigo_recuperacao Int?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Pedido {
+  id          Int   @id @default(autoincrement())
+  usuarioId     Int
+  content       String   @unique
+  usuario       Usuario   @relation(fields: [usuarioId], references: [id])
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -34,6 +34,15 @@ class Inscricao {
     return await prisma.inscricao.findUnique({ where: { id } });
   }
 
+  static async findByUserId(usuarioId: number) {
+    return await prisma.inscricao.findMany({
+      where: { usuarioId },
+      include: {
+        usuario: true,  
+      },
+    });
+  }
+
   static async update(id: number, data: Partial<Inscricao>) {
     return await prisma.inscricao.update({ where: { id }, data });
   }
