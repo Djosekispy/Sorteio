@@ -45,6 +45,7 @@ class AprovaEntitiesService implements IAproveEntities {
             return { error : 'Usuário Não existe'}
         }
         await Pedido.update(idOrder,{estado : 'rejeitado'})
+        await Usuario.update(id,{tipo_perfil : 'cliente'}) as IUsuario
         return await Usuario.findById(id) as IUsuario
     } catch (error) {
         return { error : 'Algo Inesperado : ' + error }
