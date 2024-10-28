@@ -37,7 +37,9 @@ class Administrador {
   static async findById(id: number) {
     return await prisma.administrador.findUnique({ where: { id } });
   }
-
+  static async findByEmail(email: string) {
+    return await prisma.administrador.findUnique({ where: { email } });
+  }
   static async update(id: number, data: Partial<Administrador>) {
     return await prisma.administrador.update({ where: { id }, data });
   }
