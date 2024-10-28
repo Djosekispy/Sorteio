@@ -6,8 +6,8 @@ import { IUsuario } from "../../../database/entities/IUsuario";
 
 interface IAproveEntities {
     showAllOrderByStatus( status : StatusPedido) : Promise<IPedido[] | { error : string }> 
-    changeUserStatus(id : number, status : TipoPerfil) : Promise<IUsuario | { error : string }>
-
+    changeUserStatus(id : number, status : TipoPerfil,idOrder : number) : Promise<IUsuario | { error : string }>
+    changeUserStatusReject(id : number,idOrder : number) : Promise<IUsuario | { error : string }>
 }
 
 

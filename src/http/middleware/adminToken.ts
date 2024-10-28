@@ -8,14 +8,14 @@ interface CustomJwtPayload extends jwt.JwtPayload {
   sessionId: string;
 }
 
-async function generateToken(user: { id: number }) {
-  const sessionId = generateSessionId();
+async function generateTokenAdmin(user: { id: number }) {
+  const sessionId = generateSessionIdAdmin();
   const generatedToken = jwt.sign({ id: user.id, sessionId }, JWT_SECRET as string, { expiresIn: '2h' });
   await  Administrador.update(user.id,{token_acesso : generatedToken})
   return generatedToken;
 }
 
-async function authenticateToken(req: Request, res: Response, next: NextFunction) {
+async function authenticateTokenAdmin(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -35,7 +35,7 @@ async function authenticateToken(req: Request, res: Response, next: NextFunction
   }
 }
 
-async function renewToken(req: Request, res: Response) {
+async function renewTokenAdmim(req: Request, res: Response) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -47,7 +47,7 @@ async function renewToken(req: Request, res: Response) {
     const sessionState = await Administrador.findById(decoded.id);
     if(!sessionState?.token_acesso) return res.status(403).json({ message: 'Token inválido ou expirado' });
 
-    const newToken = await generateToken({ id: decoded.id });
+    const newToken = await generateTokenAdmin({ id: decoded.id });
     await Administrador.update(decoded.id,{token_acesso : String(newToken) });
 
     return res.status(201).json({ token: newToken });
@@ -56,7 +56,7 @@ async function renewToken(req: Request, res: Response) {
   }
 }
 
-async function logout(req: Request, res: Response) {
+async function logoutAdmin(req: Request, res: Response) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -76,8 +76,8 @@ async function logout(req: Request, res: Response) {
   }
 }
 
-function generateSessionId() {
+function generateSessionIdAdmin() {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-export { renewToken, authenticateToken, generateToken, logout, generateSessionId };
+export { renewTokenAdmim, authenticateTokenAdmin, generateTokenAdmin, logoutAdmin, generateSessionIdAdmin };

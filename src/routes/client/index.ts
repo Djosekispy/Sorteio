@@ -1,6 +1,6 @@
 import express from 'express';
-import { authController, userController } from './bootstrap';
 import { getUserIdFromToken } from '../../http/middleware/getIdFromToken';
+import { authController, userController } from '../../http/controller/client';
 
 const rotasDoCliente = express.Router();
 
@@ -18,7 +18,6 @@ rotasDoCliente.get('/users/me',getUserIdFromToken, userController.getUser);
 rotasDoCliente.put('/users/me',getUserIdFromToken, userController.updateUser);
 rotasDoCliente.post('/users/request-entity',getUserIdFromToken, userController.changeProfileStatus);
 rotasDoCliente.get('/users/me/participations',getUserIdFromToken, userController.getHistory);
-rotasDoCliente.get('/users/:id',getUserIdFromToken, userController.showOneUser);
 
 
 
