@@ -1,9 +1,9 @@
-import { IInscricoes } from "../../database/entities/IInscricoes";
-import { IUsuario } from "../../database/entities/IUsuario";
-import Inscricao from "../../database/model/inscricoes";
-import Pedido from "../../database/model/pedido";
-import Usuario from "../../database/model/usuario";
-import { IUser } from "../interface/client/user.interface";
+import { IInscricoes } from "../../../database/entities/IInscricoes";
+import { IUsuario } from "../../../database/entities/IUsuario";
+import Inscricao from "../../../database/model/inscricoes";
+import Pedido from "../../../database/model/pedido";
+import Usuario from "../../../database/model/usuario";
+import { IUser } from "../../interface/client/user.interface";
 
 
 
@@ -25,10 +25,11 @@ class UserService implements IUser {
     {
         try {
             const user = await Usuario.findById(userId);
+            const dados = { ...data };
             if(!user){
                 return { error : 'Usuário não existe'}
             }
-            await Usuario.update(user.id,data)
+            await Usuario.update(user.id,dados)
             return await Usuario.findById(userId) as IUsuario
         } catch (error) {
             return { error : 'Algo deu errado : ' + error}

@@ -17,7 +17,8 @@ rotasDoCliente.get('/auth/logout',getUserIdFromToken, authController.logout);
 rotasDoCliente.get('/users/me',getUserIdFromToken, userController.getUser);
 rotasDoCliente.put('/users/me',getUserIdFromToken, userController.updateUser);
 rotasDoCliente.post('/users/request-entity',getUserIdFromToken, userController.changeProfileStatus);
-rotasDoCliente.post('/users/me/participations',getUserIdFromToken, userController.getHistory);
+rotasDoCliente.get('/users/me/participations',getUserIdFromToken, userController.getHistory);
+rotasDoCliente.get('/users/:id',getUserIdFromToken, userController.showOneUser);
 
 
 

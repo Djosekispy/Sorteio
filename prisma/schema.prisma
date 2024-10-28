@@ -74,7 +74,7 @@ model Pedido {
   usuarioId     Int
   content       String   @unique
   usuario       Usuario   @relation(fields: [usuarioId], references: [id])
-
+  estado        StatusPedido? @default(pendente)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -147,6 +147,12 @@ enum EstadoDocumento {
 enum TipoPerfil {
   cliente
   sorteador
+}
+
+enum StatusPedido {
+    aceite
+    rejeitado
+    pendente
 }
 
 enum StatusSorteio {

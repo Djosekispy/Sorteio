@@ -1,6 +1,6 @@
-import { Response } from "express";
-import { IGetUserAuthInfoRequest } from "../../@types/express";
-import { IUser } from "../interface/client/user.interface";
+import { Request, Response } from "express";
+import { IGetUserAuthInfoRequest } from "../../../@types/express";
+import { IUser } from "../../interface/client/user.interface";
 
 
 class UserController {
@@ -8,6 +8,15 @@ class UserController {
     getUser = async(req: IGetUserAuthInfoRequest, res:Response)=>{
         const userId = req.userId
         const user = await this.userService.show(userId as number);
+        if('error' in user){
+            return res.status(404).json({message : user.error})
+        }
+        return res.status(201).json(user)
+    }
+
+    showOneUser = async(req: Request, res:Response)=>{
+        const { id } = req.params 
+        const user = await this.userService.show(parseInt(id));
         if('error' in user){
             return res.status(404).json({message : user.error})
         }

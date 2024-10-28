@@ -1,3 +1,4 @@
+import { StatusPedido } from "@prisma/client";
 import prisma from "../../config/database";
 import { IPedido } from "../entities/IPedido";
 
@@ -5,6 +6,7 @@ class Pedido {
     id?: number;
     usuarioId : number;
     content :  string;
+    estado ? : StatusPedido
     createdAt?: Date;
     updatedAt?: Date;
 
@@ -25,7 +27,13 @@ class Pedido {
   async save() {
     return await prisma.pedido.create({ data: this });
   }
-
+  static  async findByStatusOrder( status : StatusPedido){
+  return await prisma.pedido.findMany({ where: { estado : status},
+    include : {
+    usuario : true
+  } });
+ }
+ 
   static async findById(id: number) {
     return await prisma.pedido.findUnique({ where: { id } });
   }

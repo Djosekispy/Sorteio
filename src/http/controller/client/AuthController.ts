@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { IAuthUser } from "../interface/client/auth.interface";
-import { IGetUserAuthInfoRequest } from '../../@types/express';
+import { IAuthUser } from "../../interface/client/auth.interface";
+import { IGetUserAuthInfoRequest } from '../../../@types/express';
 
 
 class AuthController {

@@ -1,10 +1,10 @@
-import { IUsuario } from "../../database/entities/IUsuario";
-import Usuario from "../../database/model/usuario";
-import { IAuthUser, LoginReturn } from "../interface/client/auth.interface";
+import { IUsuario } from "../../../database/entities/IUsuario";
+import Usuario from "../../../database/model/usuario";
+import { IAuthUser, LoginReturn } from "../../interface/client/auth.interface";
 import bcrypt from 'bcrypt'
-import { generateToken } from "../middleware/token";
-import Mailer from "../utils/email";
-import { randomDigits } from "../utils/generateRandomNumber";
+import { generateToken } from "../../middleware/token";
+import Mailer from "../../utils/email";
+import { randomDigits } from "../../utils/generateRandomNumber";
 
 class AuthService implements IAuthUser {
 

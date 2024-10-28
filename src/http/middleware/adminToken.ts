@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { JWT_SECRET } from '../../config/variables.env';
-import Usuario from '../../database/model/usuario';
+import Administrador from '../../database/model/administrador';
 
 interface CustomJwtPayload extends jwt.JwtPayload {
   id: number;
@@ -11,7 +11,7 @@ interface CustomJwtPayload extends jwt.JwtPayload {
 async function generateToken(user: { id: number }) {
   const sessionId = generateSessionId();
   const generatedToken = jwt.sign({ id: user.id, sessionId }, JWT_SECRET as string, { expiresIn: '2h' });
-  await  Usuario.update(user.id,{token_acesso : generatedToken})
+  await  Administrador.update(user.id,{token_acesso : generatedToken})
   return generatedToken;
 }
 
@@ -24,7 +24,7 @@ async function authenticateToken(req: Request, res: Response, next: NextFunction
   try {
     const decoded = jwt.verify(token, JWT_SECRET as string) as CustomJwtPayload;
 
-    const sessionExists = await Usuario.findById(decoded.id);
+    const sessionExists = await Administrador.findById(decoded.id);
     if (sessionExists?.token_acesso !== token ) {
       return res.status(403).json({ message: 'Token inválido ou sessão expirada' });
     }
@@ -44,11 +44,11 @@ async function renewToken(req: Request, res: Response) {
   try {
     const decoded = jwt.verify(token, JWT_SECRET as string) as CustomJwtPayload;
 
-    const sessionState = await Usuario.findById(decoded.id);
+    const sessionState = await Administrador.findById(decoded.id);
     if(!sessionState?.token_acesso) return res.status(403).json({ message: 'Token inválido ou expirado' });
 
     const newToken = await generateToken({ id: decoded.id });
-    await Usuario.update(decoded.id,{token_acesso : String(newToken) });
+    await Administrador.update(decoded.id,{token_acesso : String(newToken) });
 
     return res.status(201).json({ token: newToken });
   } catch (err) {
@@ -68,7 +68,7 @@ async function logout(req: Request, res: Response) {
     const decoded = jwt.verify(token, JWT_SECRET as string) as CustomJwtPayload;
 
     
-    await Usuario.update(decoded.id,{token_acesso : '' });
+    await Administrador.update(decoded.id,{token_acesso : '' });
 
     return res.status(200).json({ message: 'Logout bem-sucedido, sessão encerrada' });
   } catch (err) {
