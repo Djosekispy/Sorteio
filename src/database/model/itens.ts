@@ -35,7 +35,13 @@ class Item {
   static async findById(id: number) {
     return await prisma.item.findUnique({ where: { id } });
   }
-
+  static async findByCategory(categoriaId: number) {
+    return await prisma.item.findMany({ where: { categoriaId },include :{ inscricoes: {
+      include : {
+        usuario : true
+      }
+    } } });
+  }
   static async update(id: number, data: Partial<Item>) {
     return await prisma.item.update({ where: { id }, data });
   }

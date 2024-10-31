@@ -36,15 +36,25 @@ class Sorteio {
     return await prisma.sorteio.create({ data: this });
   }
 
-  static async findById(id: bigint) {
-    return await prisma.sorteio.findUnique({ where: { id } });
+  static async findById(id: number) {
+    return await prisma.sorteio.findUnique({ where: { id },
+    include : {
+      categorias : {include : {itens : true}},
+      reclamacoes : true
+    } });
   }
-
-  static async update(id: bigint, data: Partial<Sorteio>) {
+  static async findAll() {
+    return await prisma.sorteio.findMany();
+  }
+  static async findByUserId(organizadorId: number) {
+    return await prisma.sorteio.findMany({ where: { organizadorId } });
+  }
+  
+  static async update(id: number, data: Partial<Sorteio>) {
     return await prisma.sorteio.update({ where: { id }, data });
   }
 
-  static async delete(id: bigint) {
+  static async delete(id: number) {
     return await prisma.sorteio.delete({ where: { id } });
   }
 }

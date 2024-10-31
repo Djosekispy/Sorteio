@@ -1,6 +1,7 @@
 import AuthService from "./AuthService";
 import UserService from "./UserService";
-
+import RafflesService from "./RafflesService";
 const authService = new AuthService()
 const userService = new UserService();
-export { authService, userService }
+const rafflesService = new RafflesService();
+export { authService, userService,rafflesService }
