@@ -84,7 +84,28 @@ class RafflesController {
         message : 'Vencedores encontrados',
         result
     });
-   }        
+   }  
+   participate = async (req : IGetUserAuthInfoRequest, res : Response) => {
+    const {sorteioId} = req.params;
+    const {ItemId} = req.body;
+    const userId = req.userId as number;
+    const result = await this.rafflesService.participate(Number(sorteioId),Number(ItemId),userId);
+    if('error' in result) return res.status(400).json({message : result.error});
+    return res.status(200).json({
+        message : 'Inscrição realizada com sucesso',
+        result
+    });
+   }   
+   cancelParticipation = async (req : IGetUserAuthInfoRequest, res : Response) => {
+    const {inscricaoId} = req.params;
+    const userId = req.userId as number;
+    const result = await this.rafflesService.cancelParticipation(Number(inscricaoId),userId);
+    if('error' in result) return res.status(400).json({message : result.error});
+    return res.status(200).json({
+        message : 'Inscrição cancelada com sucesso',
+        result
+    });
+   }   
 
 }
 

@@ -8,17 +8,18 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import PDFDocument from 'pdfkit';
 import { storagebucket } from "../../utils/firebase";
-import Usuario from "../../../database/model/usuario";
 import IEntitiesRepository from "../../repositoryInterfaces/IEntitiesRepository";
 
 class RefflesService implements IRafflesInterface {
 
-    constructor(private entitiesRepository: IEntitiesRepository){}
+    constructor(private entitiesRepository: IEntitiesRepository){
+        this.entitiesRepository = entitiesRepository;
+    }
  async save(data : ISorteio) : Promise<ISorteio[]  | { error : string}>
  {
     try {
      
-        const user = this.entitiesRepository.isOrganizer(data.organizadorId)
+        const user = await this.entitiesRepository.isOrganizer(data.organizadorId)
        if(!user){
         return { error : 'Você não tem permissão para criar sorteios'}
        }
@@ -38,7 +39,7 @@ class RefflesService implements IRafflesInterface {
         if(!findRaffle){
             return { error : 'Sorteio Inexistente'}
         }
-        const user = this.entitiesRepository.isOwner(findRaffle.organizadorId,sorteioId)
+        const user = await this.entitiesRepository.isOwner(findRaffle.organizadorId,sorteioId)
         if(!user){
          return { error : 'Você não tem permissão para actualizar este sorteio'}
         }
@@ -79,7 +80,7 @@ class RefflesService implements IRafflesInterface {
 async showAllByUserId(userId:number) : Promise<ISorteio[] | { error : string} >
 {
     try {
-        const user = this.entitiesRepository.isOrganizer(userId)
+        const user = await  this.entitiesRepository.isOrganizer(userId)
         if(!user){
             return { error : 'Você não tem permissão para ver os sorteios deste usuário'}
         }
@@ -101,7 +102,7 @@ async delete(sorteioId:number,userId: number) : Promise<ISorteio[] | { error : s
         if(!raffle) {
             return { error: 'Sorteio não encontrado' };
         }
-        const user = this.entitiesRepository.isOwner(userId,sorteioId)
+        const user = await this.entitiesRepository.isOwner(userId,sorteioId)
         if(!user){
             return { error : 'Você não tem permissão para deletar este sorteio'}
         }
@@ -116,7 +117,7 @@ async delete(sorteioId:number,userId: number) : Promise<ISorteio[] | { error : s
 async draw(sorteioId: number,categoriaId:number,userId: number): Promise<IInscricoes[] | { error: string }> {
     try {
         const raffle = await Sorteio.findById(sorteioId);
-        const user = this.entitiesRepository.isOwner(userId,sorteioId)
+        const user = await this.entitiesRepository.isOwner(userId,sorteioId)
         if(!user){
             return { error : 'Você não tem permissão para realizar este sorteio'}
         }
@@ -258,6 +259,46 @@ async winners(sorteioId: string, categoriaId: number,userId: number): Promise<{ 
         return { error: 'Algo deu errado: ' + error };
     }
 }
+async participate(sorteioId : number,ItemId:number,userId: number) : Promise<IInscricoes[] | { error : string}>{
+    try {
+     const user = await this.entitiesRepository.isParticipant(userId)
+     if(!user){
+        return { error : 'Você não tem permissão para participar deste sorteio'}
+     }
+     const participant = await this.entitiesRepository.isParticipantInRaffle(userId,sorteioId)
+     if(!participant){
+        return { error : 'Você não está participando deste sorteio'}
+     } 
+     const own = await this.entitiesRepository.isOwner(userId,sorteioId)
+     if(own){
+        return { error : 'Você não pode participar de seu próprio sorteio'}
+     }
+     const inscricao = new Inscricao({itemId : ItemId,usuarioId : userId,estado_candidatura : 'pendente'})
+     await inscricao.save()
+     return await Inscricao.findByUserId(userId) as IInscricoes[]
+    } catch (error) {
+       return { error : 'Algo deu errado : ' + error}
+    }
+}
+async cancelParticipation(inscricaoId:number,userId:number) : Promise<IInscricoes[] | { error : string}>{
+    try {
+        const inscricao = await Inscricao.findById(inscricaoId)
+        if(!inscricao){
+            return { error : 'Inscrição não encontrada'}
+        }
+        const user = await this.entitiesRepository.isParticipant(userId)
+        if(!user){
+            return { error : 'Você não tem permissão para cancelar esta inscrição'}
+        }
+        if(inscricao.usuarioId !== userId){
+            return { error : 'Você não tem permissão para cancelar esta inscrição'}
+        }
+        await Inscricao.delete(inscricaoId)
+        return await Inscricao.findByUserId(userId) as IInscricoes[]
+    } catch (error) {
+        return { error : 'Algo deu errado : ' + error}
+    }
+}   
 
 }
 

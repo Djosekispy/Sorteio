@@ -29,7 +29,8 @@ rotasDoCliente.get('/raffles/users/yours',authenticateToken, getUserIdFromToken,
 rotasDoCliente.delete('/raffles/:sorteioId',authenticateToken, getUserIdFromToken, rafflesController.delete);
 rotasDoCliente.post('/raffles/:sorteioId/draw',authenticateToken, getUserIdFromToken, rafflesController.draw);
 rotasDoCliente.get('/raffles/:sorteioId/winners',authenticateToken, getUserIdFromToken, rafflesController.winners);
-
+rotasDoCliente.post('/raffles/:sorteioId/participate',authenticateToken, getUserIdFromToken, rafflesController.participate);
+rotasDoCliente.delete('/raffles/:inscricaoId/participate',authenticateToken, getUserIdFromToken, rafflesController.cancelParticipation);
 
 
 export default rotasDoCliente;
