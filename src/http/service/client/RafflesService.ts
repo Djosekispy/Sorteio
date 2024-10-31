@@ -8,12 +8,22 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import PDFDocument from 'pdfkit';
 import { storagebucket } from "../../utils/firebase";
+import Usuario from "../../../database/model/usuario";
+import IEntitiesRepository from "../../repositoryInterfaces/IEntitiesRepository";
 
 class RefflesService implements IRafflesInterface {
+
+    constructor(private entitiesRepository: IEntitiesRepository){}
  async save(data : ISorteio) : Promise<ISorteio[]  | { error : string}>
  {
     try {
-        const raffle = new Sorteio(data)
+     
+        const user = this.entitiesRepository.isOrganizer(data.organizadorId)
+       if(!user){
+        return { error : 'Você não tem permissão para criar sorteios'}
+       }
+       data.data_realizacao = new Date(data.data_realizacao);
+       const raffle = new Sorteio(data)
        await  raffle.save();
        return await Sorteio.findByUserId(data.organizadorId) as ISorteio[]; 
     } catch (error) {
@@ -23,9 +33,14 @@ class RefflesService implements IRafflesInterface {
  async update (sorteioId : number, data : Partial<ISorteio>) : Promise<ISorteio | { error : string} >
  {
     try {
+       
         const findRaffle = await Sorteio.findById(sorteioId)
         if(!findRaffle){
             return { error : 'Sorteio Inexistente'}
+        }
+        const user = this.entitiesRepository.isOwner(findRaffle.organizadorId,sorteioId)
+        if(!user){
+         return { error : 'Você não tem permissão para actualizar este sorteio'}
         }
         await Sorteio.update(sorteioId,data)
         return await Sorteio.findById(sorteioId) as ISorteio
@@ -64,6 +79,10 @@ class RefflesService implements IRafflesInterface {
 async showAllByUserId(userId:number) : Promise<ISorteio[] | { error : string} >
 {
     try {
+        const user = this.entitiesRepository.isOrganizer(userId)
+        if(!user){
+            return { error : 'Você não tem permissão para ver os sorteios deste usuário'}
+        }
         const raffles = await Sorteio.findByUserId(userId);
         if(!raffles || raffles.length === 0) {
             return { error: 'Nenhum sorteio encontrado para este usuário' };
@@ -74,12 +93,17 @@ async showAllByUserId(userId:number) : Promise<ISorteio[] | { error : string} >
     }
 }
 
-async delete(sorteioId:number) : Promise<ISorteio[] | { error : string}>
+async delete(sorteioId:number,userId: number) : Promise<ISorteio[] | { error : string}>
 {
     try {
+      
         const raffle = await Sorteio.findById(sorteioId);
         if(!raffle) {
             return { error: 'Sorteio não encontrado' };
+        }
+        const user = this.entitiesRepository.isOwner(userId,sorteioId)
+        if(!user){
+            return { error : 'Você não tem permissão para deletar este sorteio'}
         }
         await Sorteio.delete(sorteioId);
         return await Sorteio.findAll();
@@ -89,9 +113,13 @@ async delete(sorteioId:number) : Promise<ISorteio[] | { error : string}>
 }
 
 
-async draw(sorteioId: number,categoriaId:number): Promise<IInscricoes[] | { error: string }> {
+async draw(sorteioId: number,categoriaId:number,userId: number): Promise<IInscricoes[] | { error: string }> {
     try {
         const raffle = await Sorteio.findById(sorteioId);
+        const user = this.entitiesRepository.isOwner(userId,sorteioId)
+        if(!user){
+            return { error : 'Você não tem permissão para realizar este sorteio'}
+        }
         if (!raffle) {
             return { error: 'Sorteio não encontrado' };
         }
@@ -100,6 +128,9 @@ async draw(sorteioId: number,categoriaId:number): Promise<IInscricoes[] | { erro
         }
         const items = await Item.findByCategory(categoriaId);
         const winners = [];
+        if(!items || items.length === 0){
+            return { error : 'Nenhum item encontrado para este sorteio'}
+        }
         for (const item of items) {
           
            const aproved =  item.inscricoes.filter(select => select.estado_candidatura === 'aprovado');
@@ -117,15 +148,27 @@ async draw(sorteioId: number,categoriaId:number): Promise<IInscricoes[] | { erro
 }
 
 
-async winners(sorteioId: string, categoriaId: number): Promise<{ pdfUrl: string } | { error: string }> {
+async winners(sorteioId: string, categoriaId: number,userId: number): Promise<{ pdfUrl: string } | { error: string }> {
     try {
         const raffle = await Sorteio.findById(Number(sorteioId));
+        const user = this.entitiesRepository.isOwner(userId,Number(sorteioId))
+        if(!user){
+            return { error : 'Você não tem permissão para ver os vencedores deste sorteio'}
+        }
         if (!raffle) {
             return { error: 'Sorteio não encontrado' };
         }
 
+        if (raffle.status !== 'finalizado') {
+            return { error: 'Sorteio não Realizado' };
+        }
+
         const items = await Item.findByCategory(categoriaId);
         const winners = [];
+
+        if(!items || items.length === 0){
+            return { error : 'Nenhum item encontrado para este sorteio'}
+        }
         for (const item of items) {
             const winner = item.inscricoes.filter(select => select.estado_candidatura === 'ganho');
             winners.push(...winner);

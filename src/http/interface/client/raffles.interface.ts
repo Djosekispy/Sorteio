@@ -8,9 +8,9 @@ interface IRafflesInterface {
     showAllAvaliable() : Promise<ISorteio[] | { error : string}>
     showOneById(sorteioId:number) : Promise<any | { error : string} >
     showAllByUserId(userId:number) : Promise<ISorteio[] | { error : string} >
-    delete(sorteioId:number) : Promise<ISorteio[] | { error : string}>
-    draw(sorteioId : number,categoriaId:number) : Promise<IInscricoes[] | { error : string}>
-    winners(sorteioId : string,categoriaId:number) : Promise<{pdfUrl : string} | { error : string}>
+    delete(sorteioId:number,userId: number) : Promise<ISorteio[] | { error : string}>
+    draw(sorteioId : number,categoriaId:number,userId: number) : Promise<IInscricoes[] | { error : string}>
+    winners(sorteioId : string,categoriaId:number,userId: number) : Promise<{pdfUrl : string} | { error : string}>
 }
 
 export {IRafflesInterface};

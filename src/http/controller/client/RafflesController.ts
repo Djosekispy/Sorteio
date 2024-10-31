@@ -53,29 +53,32 @@ class RafflesController {
         result
     });
    }    
-   delete = async (req : Request, res : Response) => {
+   delete = async (req : IGetUserAuthInfoRequest, res : Response) => {
     const {sorteioId} = req.params;
-    const result = await this.rafflesService.delete(Number(sorteioId));
+    const userId = req.userId as number;
+    const result = await this.rafflesService.delete(Number(sorteioId),userId);
     if('error' in result) return res.status(400).json({message : result.error});
     return res.status(200).json({
         message : 'Sorteio deletado com sucesso',
         result
     });
    }    
-   draw = async (req : Request, res : Response) => {
+   draw = async (req : IGetUserAuthInfoRequest, res : Response) => {
     const {sorteioId} = req.params;
     const {categoriaId} = req.body;
-    const result = await this.rafflesService.draw(Number(sorteioId),Number(categoriaId));
+    const userId = req.userId as number;
+    const result = await this.rafflesService.draw(Number(sorteioId),Number(categoriaId),userId);
     if('error' in result) return res.status(400).json({message : result.error});
     return res.status(200).json({
         message : 'Sorteio realizado com sucesso',
         result
     });
    }    
-   winners = async (req : Request, res : Response) => {
+   winners = async (req : IGetUserAuthInfoRequest, res : Response) => {
     const {sorteioId} = req.params;
     const {categoriaId} = req.body;
-    const result = await this.rafflesService.winners(sorteioId,categoriaId);
+    const userId = req.userId as number;
+    const result = await this.rafflesService.winners(sorteioId,categoriaId,userId);
     if('error' in result) return res.status(400).json({message : result.error});
     return res.status(200).json({
         message : 'Vencedores encontrados',
