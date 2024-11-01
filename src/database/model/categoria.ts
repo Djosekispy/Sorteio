@@ -6,8 +6,8 @@ class Categoria {
   nome: string;
   descricao: string;
   sorteioId: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 
   constructor({
     id,

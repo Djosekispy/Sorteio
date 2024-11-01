@@ -12,11 +12,8 @@ import IEntitiesRepository from "../../repositoryInterfaces/IEntitiesRepository"
 
 class RefflesService implements IRafflesInterface {
 
-    constructor(private entitiesRepository: IEntitiesRepository){
-        this.entitiesRepository = entitiesRepository;
-    }
- async save(data : ISorteio) : Promise<ISorteio[]  | { error : string}>
- {
+    constructor(private entitiesRepository: IEntitiesRepository){}
+ save = async (data : ISorteio) : Promise<ISorteio[]  | { error : string}> => {
     try {
      
         const user = await this.entitiesRepository.isOrganizer(data.organizadorId)
@@ -31,8 +28,7 @@ class RefflesService implements IRafflesInterface {
         return { error : 'Algo deu errado : ' + error}
     }
  }
- async update (sorteioId : number, data : Partial<ISorteio>) : Promise<ISorteio | { error : string} >
- {
+  update = async (sorteioId : number, data : Partial<ISorteio>) : Promise<ISorteio | { error : string} > => {
     try {
        
         const findRaffle = await Sorteio.findById(sorteioId)
@@ -50,8 +46,7 @@ class RefflesService implements IRafflesInterface {
     }
  }
 
- async showAllAvaliable() : Promise<ISorteio[] | { error : string}>
- {
+ showAllAvaliable = async () : Promise<ISorteio[] | { error : string}> => {
     try {
         const allData = await Sorteio.findAll();
         const rafflesAvaliable = allData.filter(item => item.status === 'corrente')
@@ -63,8 +58,7 @@ class RefflesService implements IRafflesInterface {
         return { error : 'Algo deu errado ' + error}
     }
  }
- async showOneById(sorteioId:number) : Promise<any | { error : string} >
- {
+ showOneById = async (sorteioId:number) : Promise<any | { error : string} > => {
     try {
         const reffle = await Sorteio.findById(sorteioId);
 
@@ -77,8 +71,7 @@ class RefflesService implements IRafflesInterface {
     }
  }
 
-async showAllByUserId(userId:number) : Promise<ISorteio[] | { error : string} >
-{
+ showAllByUserId = async (userId:number) : Promise<ISorteio[] | { error : string} > => {
     try {
         const user = await  this.entitiesRepository.isOrganizer(userId)
         if(!user){
@@ -94,8 +87,7 @@ async showAllByUserId(userId:number) : Promise<ISorteio[] | { error : string} >
     }
 }
 
-async delete(sorteioId:number,userId: number) : Promise<ISorteio[] | { error : string}>
-{
+ delete = async (sorteioId:number,userId: number) : Promise<ISorteio[] | { error : string}> => {
     try {
       
         const raffle = await Sorteio.findById(sorteioId);
@@ -114,7 +106,7 @@ async delete(sorteioId:number,userId: number) : Promise<ISorteio[] | { error : s
 }
 
 
-async draw(sorteioId: number,categoriaId:number,userId: number): Promise<IInscricoes[] | { error: string }> {
+ draw = async (sorteioId: number,categoriaId:number,userId: number): Promise<IInscricoes[] | { error: string }> => {
     try {
         const raffle = await Sorteio.findById(sorteioId);
         const user = await this.entitiesRepository.isOwner(userId,sorteioId)
@@ -148,8 +140,7 @@ async draw(sorteioId: number,categoriaId:number,userId: number): Promise<IInscri
     }
 }
 
-
-async winners(sorteioId: string, categoriaId: number,userId: number): Promise<{ pdfUrl: string } | { error: string }> {
+ winners = async (sorteioId: string, categoriaId: number,userId: number): Promise<{ pdfUrl: string } | { error: string }> => {
     try {
         const raffle = await Sorteio.findById(Number(sorteioId));
         const user = this.entitiesRepository.isOwner(userId,Number(sorteioId))
@@ -259,7 +250,7 @@ async winners(sorteioId: string, categoriaId: number,userId: number): Promise<{ 
         return { error: 'Algo deu errado: ' + error };
     }
 }
-async participate(sorteioId : number,ItemId:number,userId: number) : Promise<IInscricoes[] | { error : string}>{
+ participate = async (sorteioId : number,ItemId:number,userId: number) : Promise<IInscricoes[] | { error : string}> => {
     try {
      const user = await this.entitiesRepository.isParticipant(userId)
      if(!user){
@@ -280,7 +271,7 @@ async participate(sorteioId : number,ItemId:number,userId: number) : Promise<IIn
        return { error : 'Algo deu errado : ' + error}
     }
 }
-async cancelParticipation(inscricaoId:number,userId:number) : Promise<IInscricoes[] | { error : string}>{
+ cancelParticipation = async (inscricaoId:number,userId:number) : Promise<IInscricoes[] | { error : string}> => {
     try {
         const inscricao = await Inscricao.findById(inscricaoId)
         if(!inscricao){
