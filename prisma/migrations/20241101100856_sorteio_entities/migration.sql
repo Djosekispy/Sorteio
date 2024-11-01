@@ -1,17 +1,19 @@
 -- CreateTable
 CREATE TABLE `Usuario` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nome_completo` VARCHAR(191) NOT NULL,
-    `data_nascimento` DATETIME(3) NOT NULL,
+    `data_nascimento` DATETIME(3) NULL,
     `email` VARCHAR(191) NOT NULL,
     `telefone` VARCHAR(191) NOT NULL,
-    `endereco` VARCHAR(191) NOT NULL,
+    `endereco` VARCHAR(191) NULL,
     `senha` VARCHAR(191) NOT NULL,
-    `foto_perfil` VARCHAR(191) NOT NULL,
+    `foto_perfil` VARCHAR(191) NULL,
     `tipo_perfil` ENUM('cliente', 'sorteador') NOT NULL DEFAULT 'cliente',
-    `sexo` VARCHAR(191) NOT NULL,
-    `estado_civil` VARCHAR(191) NOT NULL,
-    `numero_bilhete` VARCHAR(191) NOT NULL,
+    `sexo` VARCHAR(191) NULL,
+    `estado_civil` VARCHAR(191) NULL,
+    `token_acesso` VARCHAR(191) NULL,
+    `codigo_recuperacao` INTEGER NULL,
+    `numero_bilhete` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -23,9 +25,9 @@ CREATE TABLE `Usuario` (
 
 -- CreateTable
 CREATE TABLE `Inscricao` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `usuarioId` BIGINT NOT NULL,
-    `itemId` BIGINT NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `usuarioId` INTEGER NOT NULL,
+    `itemId` INTEGER NOT NULL,
     `estado_candidatura` ENUM('aprovado', 'recusado', 'ganho', 'pendente') NOT NULL DEFAULT 'pendente',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -35,12 +37,12 @@ CREATE TABLE `Inscricao` (
 
 -- CreateTable
 CREATE TABLE `Documento` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `bilheteUrl` VARCHAR(191) NOT NULL,
     `nif` VARCHAR(191) NOT NULL,
     `licenca` VARCHAR(191) NOT NULL,
     `estado` ENUM('verificado', 'pendente') NOT NULL DEFAULT 'pendente',
-    `usuarioId` BIGINT NOT NULL,
+    `usuarioId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -49,11 +51,13 @@ CREATE TABLE `Documento` (
 
 -- CreateTable
 CREATE TABLE `Administrador` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nome` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `senha` VARCHAR(191) NOT NULL,
     `telefone` VARCHAR(191) NOT NULL,
+    `token_acesso` VARCHAR(191) NULL,
+    `codigo_recuperacao` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -62,12 +66,25 @@ CREATE TABLE `Administrador` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Pedido` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `usuarioId` INTEGER NOT NULL,
+    `content` VARCHAR(191) NOT NULL,
+    `estado` ENUM('aceite', 'rejeitado', 'pendente') NULL DEFAULT 'pendente',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Pedido_content_key`(`content`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Reclamacao` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `titulo` VARCHAR(191) NOT NULL,
     `conteudo` VARCHAR(191) NOT NULL,
-    `usuarioId` BIGINT NOT NULL,
-    `sorteioId` BIGINT NOT NULL,
+    `usuarioId` INTEGER NOT NULL,
+    `sorteioId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -76,11 +93,11 @@ CREATE TABLE `Reclamacao` (
 
 -- CreateTable
 CREATE TABLE `Sorteio` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nome` VARCHAR(191) NOT NULL,
     `data_realizacao` DATETIME(3) NOT NULL,
     `status` ENUM('corrente', 'cancelado', 'finalizado') NOT NULL DEFAULT 'corrente',
-    `organizadorId` BIGINT NOT NULL,
+    `organizadorId` INTEGER NOT NULL,
     `politicas` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -90,11 +107,11 @@ CREATE TABLE `Sorteio` (
 
 -- CreateTable
 CREATE TABLE `Item` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nome` VARCHAR(191) NOT NULL,
     `propriedades` JSON NOT NULL,
     `descricao` VARCHAR(191) NOT NULL,
-    `categoriaId` BIGINT NOT NULL,
+    `categoriaId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -103,10 +120,10 @@ CREATE TABLE `Item` (
 
 -- CreateTable
 CREATE TABLE `Categoria` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nome` VARCHAR(191) NOT NULL,
     `descricao` VARCHAR(191) NOT NULL,
-    `sorteioId` BIGINT NOT NULL,
+    `sorteioId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -121,6 +138,9 @@ ALTER TABLE `Inscricao` ADD CONSTRAINT `Inscricao_itemId_fkey` FOREIGN KEY (`ite
 
 -- AddForeignKey
 ALTER TABLE `Documento` ADD CONSTRAINT `Documento_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Pedido` ADD CONSTRAINT `Pedido_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Reclamacao` ADD CONSTRAINT `Reclamacao_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

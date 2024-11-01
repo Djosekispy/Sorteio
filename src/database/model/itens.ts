@@ -7,8 +7,8 @@ class Item {
   propriedades: object;
   descricao: string;
   categoriaId: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 
   constructor({
     id,

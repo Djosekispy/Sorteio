@@ -1,6 +1,6 @@
 import express from 'express';
 import { getUserIdFromToken } from '../../http/middleware/getIdFromToken';
-import { authController, categoryController, rafflesController, userController } from '../../http/controller/client';
+import { authController, categoryController, itemController, rafflesController, userController } from '../../http/controller/client';
 import { authenticateToken } from '../../http/middleware/token';
 
 const rotasDoCliente = express.Router();
@@ -36,5 +36,10 @@ rotasDoCliente.delete('/raffles/:inscricaoId/participate',authenticateToken, get
 rotasDoCliente.post('/categories',authenticateToken, getUserIdFromToken, categoryController.saveCategory);
 rotasDoCliente.delete('/categories/:id',authenticateToken, getUserIdFromToken, categoryController.deleteCategory);
 rotasDoCliente.put('/categories/:id',authenticateToken, getUserIdFromToken, categoryController.updateCategory);
+
+//Rotas para Itens
+rotasDoCliente.post('/items',authenticateToken, getUserIdFromToken, itemController.saveItem);
+rotasDoCliente.put('/items/:id',authenticateToken, getUserIdFromToken, itemController.updateItem);
+rotasDoCliente.delete('/items/:id',authenticateToken, getUserIdFromToken, itemController.deleteItem);
 
 export default rotasDoCliente;

@@ -257,8 +257,8 @@ class RefflesService implements IRafflesInterface {
         return { error : 'Você não tem permissão para participar deste sorteio'}
      }
      const participant = await this.entitiesRepository.isParticipantInRaffle(userId,sorteioId)
-     if(!participant){
-        return { error : 'Você não está participando deste sorteio'}
+     if(participant){
+        return { error : 'Você Já está participando deste sorteio'}
      } 
      const own = await this.entitiesRepository.isOwner(userId,sorteioId)
      if(own){

@@ -6,7 +6,7 @@
     "dev": "nodemon ./api/index.ts",
     "db:migrate": "npx prisma migrate dev --name sorteio-entities",
     "db:generate": "npx prisma generate && npx prisma db push",
-    "vercel-build": "npx prisma migrate deploy && npx prisma generate && npx prisma db push",
+        "vercel-build": "npx prisma migrate dev --name sorteio-entities --create-only && npx prisma generate && npx prisma db push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
