@@ -4,9 +4,11 @@ import RafflesService from "./RafflesService";
 import { entitiesRepository } from "../../repository";
 import { CategoryService } from "./CategoryService";
 import { ItemService } from "./ItemService";
+import ComplaintService from "./ComplaintService";
 const authService = new AuthService()
 const userService = new UserService();
 const rafflesService = new RafflesService(entitiesRepository);
 const categoryService = new CategoryService(entitiesRepository)
 const itemService = new ItemService(entitiesRepository)
-export { authService, userService,rafflesService,categoryService,itemService }
+const complaintService = new ComplaintService()
+export { authService, userService,rafflesService,categoryService,itemService,complaintService }

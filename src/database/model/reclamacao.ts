@@ -7,8 +7,8 @@ class Reclamacao {
   conteudo: string;
   usuarioId: number;
   sorteioId: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 
   constructor({
     id,
@@ -33,11 +33,15 @@ class Reclamacao {
   }
 
   static async findById(id: number) {
-    return await prisma.reclamacao.findUnique({ where: { id } });
+    return await prisma.reclamacao.findUnique({ where: { id }, include: { usuario: true } });
   }
 
   static async update(id: number, data: Partial<Reclamacao>) {
     return await prisma.reclamacao.update({ where: { id }, data });
+  }
+  
+  static async find() {
+    return await prisma.reclamacao.findMany({include: {usuario: true}});
   }
 
   static async delete(id: number) {

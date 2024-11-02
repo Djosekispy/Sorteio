@@ -1,6 +1,6 @@
 import express from 'express';
 import { getUserIdFromToken } from '../../http/middleware/getIdFromToken';
-import { authController, categoryController, itemController, rafflesController, userController } from '../../http/controller/client';
+import { authController, categoryController, complaintController, itemController, rafflesController, userController } from '../../http/controller/client';
 import { authenticateToken } from '../../http/middleware/token';
 
 const rotasDoCliente = express.Router();
@@ -42,4 +42,8 @@ rotasDoCliente.post('/items',authenticateToken, getUserIdFromToken, itemControll
 rotasDoCliente.put('/items/:id',authenticateToken, getUserIdFromToken, itemController.updateItem);
 rotasDoCliente.delete('/items/:id',authenticateToken, getUserIdFromToken, itemController.deleteItem);
 
+//Rotas de Reclamações
+rotasDoCliente.post('/complaints',authenticateToken, getUserIdFromToken, complaintController.saveComplaint);
+rotasDoCliente.get('/complaints',authenticateToken, getUserIdFromToken, complaintController.getComplaints);
+rotasDoCliente.get('/complaints/:sorteioId',authenticateToken, getUserIdFromToken, complaintController.getComplaintsByRaffle);
 export default rotasDoCliente;

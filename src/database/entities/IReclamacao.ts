@@ -6,6 +6,6 @@ export interface IReclamacao {
     conteudo: string;
     usuarioId: number;
     sorteioId: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
