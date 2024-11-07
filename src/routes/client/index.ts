@@ -46,4 +46,7 @@ rotasDoCliente.delete('/items/:id',authenticateToken, getUserIdFromToken, itemCo
 rotasDoCliente.post('/complaints',authenticateToken, getUserIdFromToken, complaintController.saveComplaint);
 rotasDoCliente.get('/complaints',authenticateToken, getUserIdFromToken, complaintController.getComplaints);
 rotasDoCliente.get('/complaints/:sorteioId',authenticateToken, getUserIdFromToken, complaintController.getComplaintsByRaffle);
+rotasDoCliente.get('/complaints/user/:userId',authenticateToken, getUserIdFromToken, complaintController.getComplaintsByUser);
+rotasDoCliente.post('/complaints/:complaintId/respond',authenticateToken, getUserIdFromToken, complaintController.respondComplaint);
+
 export default rotasDoCliente;

@@ -33,7 +33,7 @@ class Reclamacao {
   }
 
   static async findById(id: number) {
-    return await prisma.reclamacao.findUnique({ where: { id }, include: { usuario: true } });
+    return await prisma.reclamacao.findUnique({ where: { id }, include: { usuario: true, sorteio: true } });
   }
 
   static async update(id: number, data: Partial<Reclamacao>) {
@@ -41,7 +41,11 @@ class Reclamacao {
   }
   
   static async find() {
-    return await prisma.reclamacao.findMany({include: {usuario: true}});
+    return await prisma.reclamacao.findMany({include: {usuario: true, sorteio: true}});
+  }
+
+  static async findByUserId(userId: number) {
+    return await prisma.reclamacao.findMany({where: {usuarioId: userId}, include: {usuario: true, sorteio: true}});
   }
 
   static async delete(id: number) {

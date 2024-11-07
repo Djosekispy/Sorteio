@@ -10,5 +10,6 @@ const userService = new UserService();
 const rafflesService = new RafflesService(entitiesRepository);
 const categoryService = new CategoryService(entitiesRepository)
 const itemService = new ItemService(entitiesRepository)
-const complaintService = new ComplaintService()
+const complaintService = new ComplaintService(entitiesRepository)
+
 export { authService, userService,rafflesService,categoryService,itemService,complaintService }

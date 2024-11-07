@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { aproveEntitiesController, authAdminController } from "../../http/controller/admin";
 import { authenticateTokenAdmin } from "../../http/middleware/adminToken";
-import { userController } from "../../http/controller/client";
+import { complaintController, userController } from "../../http/controller/client";
 import { getUserIdFromToken } from "../../http/middleware/getIdFromToken";
 
 
@@ -19,6 +19,10 @@ adminRouter.post("/entity-requests/:id/:idOrder/approve",authenticateTokenAdmin,
 adminRouter.post("/entity-requests/:id/:idOrder/reject",authenticateTokenAdmin, aproveEntitiesController.RejectStatusOrders);
 adminRouter.get('/users/:id',authenticateTokenAdmin, userController.showOneUser);
 
-
+//Rotas de Reclamações
+adminRouter.get('/complaints',authenticateTokenAdmin, complaintController.getComplaints);
+adminRouter.get('/complaints/:sorteioId',authenticateTokenAdmin, complaintController.getComplaintsByRaffle);
+adminRouter.get('/complaints/user/:userId',authenticateTokenAdmin, complaintController.getComplaintsByUser);
+adminRouter.post('/complaints/:complaintId/respond',authenticateTokenAdmin, complaintController.respondComplaint);
 
 export default adminRouter;
