@@ -15,7 +15,7 @@ model Usuario {
   telefone          String    @unique
   endereco          String?
   senha             String
-  foto_perfil       String?
+  foto_perfil       String?   @db.Text
   tipo_perfil       TipoPerfil @default(cliente)
   sexo              String?
   estado_civil      String?
@@ -45,9 +45,9 @@ model Inscricao {
 
 model Documento {
   id                Int    @id @default(autoincrement())
-  bilheteUrl        String
-  nif               String
-  licenca           String
+  bilheteUrl        String  @db.Text
+  nif               String  @db.Text
+  licenca           String  @db.Text
   estado            EstadoDocumento @default(pendente)
   usuarioId         Int
   usuario           Usuario   @relation(fields: [usuarioId], references: [id])
@@ -96,6 +96,7 @@ model Sorteio {
   id              Int     @id @default(autoincrement())
   nome            String
   data_realizacao DateTime
+  cover           String? @db.Text
   status          StatusSorteio @default(corrente)
   organizadorId   Int
   organizador     Usuario      @relation(fields: [organizadorId], references: [id], name: "OrganizadorSorteios")

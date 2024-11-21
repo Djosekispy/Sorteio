@@ -10,17 +10,19 @@ class RafflesController {
    save = async (req : IGetUserAuthInfoRequest, res : Response) => {
     const userId = req.userId as number ;
     const {nome,data_realizacao,politicas} = req.body;
-    const result = await this.rafflesService.save({nome,data_realizacao,politicas, organizadorId : userId,status : StatusSorteio.corrente});
+    const cover = req.downloadURL as string
+    const result = await this.rafflesService.save({nome,data_realizacao,politicas, organizadorId : userId,status : StatusSorteio.corrente, cover});
     if('error' in result) return res.status(400).json({message : result.error});
     return res.status(200).json({
         message : 'Sorteio criado com sucesso',
         result
     });
    }
-   update = async (req : Request, res : Response) => {
+   update = async (req : IGetUserAuthInfoRequest, res : Response) => {
     const {sorteioId} = req.params;
     const {nome,data_realizacao,politicas} = req.body;
-    const result = await this.rafflesService.update(Number(sorteioId),{nome,data_realizacao,politicas});
+    const cover = req.downloadURL as string
+    const result = await this.rafflesService.update(Number(sorteioId),{nome,data_realizacao,politicas,cover});
     if('error' in result) return res.status(400).json({message : result.error});
     return res.status(200).json({
         message : 'Sorteio atualizado com sucesso',

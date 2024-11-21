@@ -6,6 +6,7 @@ class Sorteio {
   id?: number;
   nome: string;
   data_realizacao: Date;
+  cover ? : string;
   status: StatusSorteio;
   organizadorId: number;
   politicas: string;
@@ -19,6 +20,7 @@ class Sorteio {
     status = StatusSorteio.corrente,
     organizadorId,
     politicas,
+    cover ,
     createdAt = new Date(),
     updatedAt = new Date(),
   }: ISorteio) {
@@ -29,6 +31,7 @@ class Sorteio {
     this.organizadorId = organizadorId;
     this.politicas = politicas;
     this.createdAt = createdAt;
+    this.cover = cover ;
     this.updatedAt = updatedAt;
   }
 

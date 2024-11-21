@@ -2,6 +2,7 @@ import express from 'express';
 import { getUserIdFromToken } from '../../http/middleware/getIdFromToken';
 import { authController, categoryController, complaintController, itemController, rafflesController, userController } from '../../http/controller/client';
 import { authenticateToken } from '../../http/middleware/token';
+import { uploadFileMiddleware } from '../../http/middleware/upload';
 
 const rotasDoCliente = express.Router();
 
@@ -17,12 +18,13 @@ rotasDoCliente.get('/auth/logout',authenticateToken, getUserIdFromToken, authCon
 //Rotas de Usuários e Perfis
 rotasDoCliente.get('/users/me',authenticateToken,getUserIdFromToken, userController.getUser);
 rotasDoCliente.put('/users/me',authenticateToken, getUserIdFromToken, userController.updateUser);
+rotasDoCliente.put('/users/photo',authenticateToken, getUserIdFromToken,uploadFileMiddleware,userController.updateUserPhoto);
 rotasDoCliente.post('/users/request-entity',authenticateToken, getUserIdFromToken, userController.changeProfileStatus);
 rotasDoCliente.get('/users/me/participations',authenticateToken, getUserIdFromToken, userController.getHistory);
 
 //Rotas para sorteio
-rotasDoCliente.post('/raffles',authenticateToken, getUserIdFromToken, rafflesController.save);
-rotasDoCliente.put('/raffles/:sorteioId',authenticateToken, getUserIdFromToken, rafflesController.update);
+rotasDoCliente.post('/raffles',authenticateToken, getUserIdFromToken,uploadFileMiddleware, rafflesController.save);
+rotasDoCliente.put('/raffles/:sorteioId',authenticateToken, getUserIdFromToken,uploadFileMiddleware, rafflesController.update);
 rotasDoCliente.get('/raffles',rafflesController.showAllAvaliable);
 rotasDoCliente.get('/raffles/:sorteioId',rafflesController.showOneById);
 rotasDoCliente.get('/raffles/users/yours',authenticateToken, getUserIdFromToken, rafflesController.showAllByUserId);

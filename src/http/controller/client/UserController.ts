@@ -35,6 +35,19 @@ class UserController {
             user
         })
     }
+    updateUserPhoto = async(req: IGetUserAuthInfoRequest, res:Response)=>{
+        const userId = req.userId
+        const  downloadURL  = req.downloadURL;
+        const data = { ...req.body, foto_perfil: downloadURL };
+        const user = await this.userService.update(userId as number, data);
+        if('error' in user){
+            return res.status(404).json({message : user.error})
+        }
+        return res.status(201).json({
+            message : 'Informações actualizadas com sucesso',
+            user
+        })
+    }
 
  changeProfileStatus = async(req: IGetUserAuthInfoRequest, res:Response)=>{
         const userId = req.userId
