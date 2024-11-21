@@ -53,7 +53,7 @@ class RefflesService implements IRafflesInterface {
         if(!rafflesAvaliable){
             return { error : 'Nenhum Sorteio Disponível'}
         }
-        return rafflesAvaliable
+        return rafflesAvaliable as ISorteio[]
     } catch (error) {
         return { error : 'Algo deu errado ' + error}
     }
@@ -81,7 +81,7 @@ class RefflesService implements IRafflesInterface {
         if(!raffles || raffles.length === 0) {
             return { error: 'Nenhum sorteio encontrado para este usuário' };
         }
-        return raffles;
+        return raffles as ISorteio[];
     } catch (error) {
         return { error: 'Algo deu errado: ' + error };
     }
@@ -99,7 +99,7 @@ class RefflesService implements IRafflesInterface {
             return { error : 'Você não tem permissão para deletar este sorteio'}
         }
         await Sorteio.delete(sorteioId);
-        return await Sorteio.findAll();
+        return await Sorteio.findAll() as ISorteio[];
     } catch (error) {
         return { error: 'Algo deu errado: ' + error };
     }
