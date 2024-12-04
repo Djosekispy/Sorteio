@@ -47,7 +47,10 @@ class Sorteio {
     } });
   }
   static async findAll() {
-    return await prisma.sorteio.findMany();
+    return await prisma.sorteio.findMany({include: { 
+            categorias : { include : { itens : {include : {inscricoes : true}}}}, 
+            reclamacoes : {include : { usuario : true}}
+          }});
   }
   static async findByUserId(organizadorId: number) {
     return await prisma.sorteio.findMany({ where: { organizadorId } });

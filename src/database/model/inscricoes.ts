@@ -43,6 +43,17 @@ class Inscricao {
     });
   }
 
+  static async findByCategory(categoryId: number) {
+    return await prisma.inscricao.findMany({
+      where: { item : {
+        categoriaId :  categoryId
+      } },
+      include: {
+        usuario: true,  
+      },
+    });
+  }
+
   static async update(id: number, data: Partial<Inscricao>) {
     return await prisma.inscricao.update({ where: { id }, data });
   }

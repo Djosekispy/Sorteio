@@ -30,7 +30,11 @@ class Categoria {
   }
 
   static async findById(id: number) {
-    return await prisma.categoria.findUnique({ where: { id } });
+    return await prisma.categoria.findUnique({ where: { id }, include : { itens : { include : { inscricoes : true}}} });
+  }
+
+  static async all(id: number) {
+    return await prisma.categoria.findMany({ include: { itens : {include : {inscricoes : true}} } });
   }
 
   static async update(id: number, data: Partial<Categoria>) {
