@@ -33,7 +33,7 @@ class Item {
   }
 
   static async findById(id: number) {
-    return await prisma.item.findUnique({ where: { id } });
+    return await prisma.item.findUnique({ where: { id }, include : { inscricoes : { include : { usuario : true}}} });
   }
   static async findByCategory(categoriaId: number) {
     return await prisma.item.findMany({ where: { categoriaId },include :{ inscricoes: {

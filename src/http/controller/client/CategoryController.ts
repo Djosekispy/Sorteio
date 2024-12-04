@@ -29,6 +29,19 @@ class CategoryController {
         if('error' in category) return res.status(400).json({ error : category.error})
         return res.status(200).json({message : 'Categoria atualizada com sucesso',category})
     }
+
+    showCategorybyId = async (req:IGetUserAuthInfoRequest,res:Response) => {
+        const { id } = req.params
+        const category = await this.categoryService.show(parseInt(id))
+        if('error' in category) return res.status(400).json({ error : category.error})
+        return res.status(200).json({message : 'Informações da categoria',category})
+    }
+
+    showAllCategory = async (req:IGetUserAuthInfoRequest,res:Response) => {
+        const { id } = req.params
+        const category = await this.categoryService.all()
+        return res.status(200).json({message : 'Todas as categorias',category})
+    }
 }
 
 export { CategoryController }

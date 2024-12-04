@@ -47,6 +47,21 @@ class CategoryService implements ICategory {
         return { error : 'Erro ao deletar categoria : ' + error}
        }
     }
+    async show(categoryId : number) :  Promise<ICategoria |  { error : string}>
+    {
+        try {
+            const category = await Categoria.findById(categoryId);
+            if(!category){
+                return { error : "Categoria Inexistente"}
+            }
+            return category
+        } catch (error) {
+            return { error : "Algo Inesperado " +  error}
+        }
+    }
+    async all() :  Promise<ICategoria[] |  { error : string}>{
+        return await Categoria.all();
+    }
 }
 
 
