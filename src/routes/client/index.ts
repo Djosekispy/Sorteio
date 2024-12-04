@@ -38,6 +38,9 @@ rotasDoCliente.delete('/raffles/:inscricaoId/participate',authenticateToken, get
 rotasDoCliente.post('/categories',authenticateToken, getUserIdFromToken, categoryController.saveCategory);
 rotasDoCliente.delete('/categories/:id',authenticateToken, getUserIdFromToken, categoryController.deleteCategory);
 rotasDoCliente.put('/categories/:id',authenticateToken, getUserIdFromToken, categoryController.updateCategory);
+rotasDoCliente.get('/categories/:id',authenticateToken, getUserIdFromToken, categoryController.showCategorybyId);
+rotasDoCliente.get('/categories-all/',authenticateToken, getUserIdFromToken, categoryController.showAllCategory);
+
 
 //Rotas para Itens
 rotasDoCliente.post('/items',authenticateToken, getUserIdFromToken, itemController.saveItem);
