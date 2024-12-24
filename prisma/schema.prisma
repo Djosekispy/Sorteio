@@ -27,6 +27,7 @@ model Usuario {
   inscricoes        Inscricao[]
   reclamacoes       Reclamacao[]
   pedidos           Pedido[]
+  notificacoes      Notificacao[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 }
@@ -120,6 +121,19 @@ model Item {
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 }
+
+model Notificacao {
+  id              Int     @id @default(autoincrement())
+  message         String
+  title           String
+  descricao       String
+  usuarioId          Int
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id])
+
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
 
 model Categoria {
   id              Int     @id @default(autoincrement())
