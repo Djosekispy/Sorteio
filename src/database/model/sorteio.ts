@@ -42,7 +42,15 @@ class Sorteio {
   static async findById(id: number) {
     return await prisma.sorteio.findUnique({ where: { id },
     include : {
-      categorias : {include : {itens : { include : {inscricoes : true}}}},
+      categorias : {include : {itens : { include : {inscricoes : {
+        include : {
+          usuario : true
+          }
+        }
+        }
+      }
+    }
+    },
       reclamacoes : true
     } });
   }

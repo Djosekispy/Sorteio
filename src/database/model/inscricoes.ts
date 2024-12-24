@@ -38,7 +38,12 @@ class Inscricao {
     return await prisma.inscricao.findMany({
       where: { usuarioId },
       include: {
-        usuario: true,  
+        usuario: true, 
+        item : { include : {
+          categoria : { include : {
+            sorteio : true
+          }}
+        }} 
       },
     });
   }

@@ -23,7 +23,7 @@ rotasDoCliente.post('/users/request-entity',authenticateToken, getUserIdFromToke
 rotasDoCliente.get('/users/me/participations',authenticateToken, getUserIdFromToken, userController.getHistory);
 
 //Rotas para sorteio
-rotasDoCliente.post('/raffles',authenticateToken, getUserIdFromToken,uploadFileMiddleware, rafflesController.save);
+rotasDoCliente.put('/raffles',authenticateToken, getUserIdFromToken,uploadFileMiddleware, rafflesController.save);
 rotasDoCliente.put('/raffles/:sorteioId',authenticateToken, getUserIdFromToken,uploadFileMiddleware, rafflesController.update);
 rotasDoCliente.get('/raffles',rafflesController.showAllAvaliable);
 rotasDoCliente.get('/raffles/:sorteioId',rafflesController.showOneById);

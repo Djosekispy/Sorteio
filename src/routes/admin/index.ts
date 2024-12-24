@@ -17,7 +17,7 @@ adminRouter.get('/logout',getUserIdFromToken, authAdminController.logout);
 adminRouter.get("/entity-requests/:status", authenticateTokenAdmin, aproveEntitiesController.showChengeStatusOrders);
 adminRouter.post("/entity-requests/:id/:idOrder/approve",authenticateTokenAdmin, aproveEntitiesController.AproveStatusOrders);
 adminRouter.post("/entity-requests/:id/:idOrder/reject",authenticateTokenAdmin, aproveEntitiesController.RejectStatusOrders);
-adminRouter.get('/users/:id',authenticateTokenAdmin, userController.showOneUser);
+adminRouter.get('/users/:id',userController.showOneUser);
 
 //Rotas de Reclamações
 adminRouter.get('/complaints',authenticateTokenAdmin, complaintController.getComplaints);

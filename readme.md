@@ -241,3 +241,8 @@ Rotas para gerenciar as notificações enviadas aos vencedores dos sorteios.
 - **Paginação e Filtros**: Para rotas que retornam listas (como sorteios disponíveis ou reclamações), incluir suporte a paginação e filtros, facilitando a navegação dos dados.
 
 - **Mensageria e E-mails**: Rotas relacionadas a notificações e sorteios devem se integrar com serviços de envio de email (ex.: **nodemailer** ou um serviço de terceiros como **SendGrid**).
+
+#nao pode se inscrever mais de uma vez no  mesmo item
+#não pode se inscrever a um sorteio já realizado
+#não pode aparecer os seortios já realizado
+#rota para alterar estado da candidatura
