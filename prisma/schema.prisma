@@ -126,7 +126,7 @@ model Notificacao {
   id              Int     @id @default(autoincrement())
   message         String
   title           String
-  descricao       String
+  status          EstadoNotificacao  @default(pendente)
   usuarioId          Int
   usuario       Usuario  @relation(fields: [usuarioId], references: [id])
 
@@ -156,6 +156,12 @@ enum EstadoCandidatura {
 
 enum EstadoDocumento {
   verificado
+  pendente
+}
+
+
+enum EstadoNotificacao {
+  lido
   pendente
 }
 

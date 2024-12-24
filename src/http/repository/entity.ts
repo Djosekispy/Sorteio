@@ -19,6 +19,13 @@ class EntitiesRepository implements IEntitiesRepository{
     const user = await Usuario.findById(userId)
     return user?.tipo_perfil === 'cliente'
    }
+   async  alradyDone(raffleId: number): Promise<boolean> {
+    const raffle = await Sorteio.findById(raffleId)
+    let done = false
+    if(raffle?.status === 'cancelado') done = true;
+    if(raffle?.status === 'finalizado') done = true;
+    return done
+   }
    async isParticipantInRaffle(userId: number, raffleId: number){
     const raffle = await Sorteio.findById(raffleId)
     const categoryIds =  raffle?.categorias.map(categoria => categoria.id)

@@ -108,7 +108,15 @@ class RafflesController {
         result
     });
    }   
-
+   updateCandidateStatus = async (req: Request, res : Response )=>{
+    const { inscricaoId, status  } = req.body;
+    const result = await this.rafflesService.updateCandidateStatus(inscricaoId, status);
+    if('error' in result) return res.status(400).json({message : result.error});
+    return res.status(200).json({
+        message : 'Estado de candidatura alterado com sucesso',
+        result
+    });
+   }
 }
 
 export default RafflesController;

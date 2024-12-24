@@ -9,6 +9,9 @@ import { v4 as uuidv4 } from 'uuid';
 import PDFDocument from 'pdfkit';
 import { storagebucket } from "../../utils/firebase";
 import IEntitiesRepository from "../../repositoryInterfaces/IEntitiesRepository";
+import { EstadoCandidatura, EstadoNotificacao } from "@prisma/client";
+import Notificacao from "../../../database/model/notificacao";
+import Categoria from "../../../database/model/categoria";
 
 class RefflesService implements IRafflesInterface {
 
@@ -253,8 +256,12 @@ class RefflesService implements IRafflesInterface {
  participate = async (sorteioId : number,ItemId:number,userId: number) : Promise<IInscricoes[] | { error : string}> => {
     try {
      const user = await this.entitiesRepository.isParticipant(userId)
+     const raffleFinished = await this.entitiesRepository.alradyDone(sorteioId)
      if(!user){
         return { error : 'Você não tem permissão para participar deste sorteio'}
+     }
+     if(raffleFinished){
+        return { error : 'Ops! Já não é possível lhe inscrever neste sorteio'}
      }
      const participant = await this.entitiesRepository.isParticipantInRaffle(userId,sorteioId)
      if(participant){
@@ -291,6 +298,32 @@ class RefflesService implements IRafflesInterface {
     }
 }   
 
+async updateCandidateStatus(inscricaoId:number,status:EstadoCandidatura) : Promise<IInscricoes[] | { error : string}>{
+    try {
+        const inscricao = await Inscricao.findById(inscricaoId)
+        if(!inscricao){
+            return { error : 'Inscrição não encontrada'}
+        }
+        const item = await Item.findById(inscricao.itemId);
+        const category = await Categoria.findById(parseInt(String(item?.categoriaId)))
+        const sorteio = await Sorteio.findById(parseInt(String(category?.sorteioId)))
+      
+        const notifyData = {
+            title : `Alteração de Candidatura ${sorteio?.nome}`,
+            message : `Sua candidatura para ${item?.nome} de ${category?.nome} foi alterada para ${status}`,
+            usuarioId : inscricao.usuarioId,
+            status : EstadoNotificacao.pendente
+
+        }
+
+        await Inscricao.update(inscricaoId, {estado_candidatura : status })
+        const notificar = new Notificacao(notifyData)
+        await notificar.save()
+        return await Inscricao.findByCategory(parseInt(String(category?.id))) as IInscricoes[]
+    } catch (error) {
+        return { error : 'Algo deu errado : ' + error}
+    }
+}
 }
 
 

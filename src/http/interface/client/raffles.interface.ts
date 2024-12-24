@@ -1,3 +1,4 @@
+import { EstadoCandidatura } from "@prisma/client";
 import { IInscricoes } from "../../../database/entities/IInscricoes";
 import { ISorteio } from "../../../database/entities/ISorteio";
 
@@ -13,6 +14,7 @@ interface IRafflesInterface {
     winners(sorteioId : string,categoriaId:number,userId: number) : Promise<{pdfUrl : string} | { error : string}>
     participate(sorteioId : number,ItemId:number,userId: number) : Promise<IInscricoes[] | { error : string}>
     cancelParticipation(inscricaoId:number,userId:number) : Promise<IInscricoes[] | { error : string}>
+    updateCandidateStatus(inscricaoId:number,status:EstadoCandidatura) : Promise<IInscricoes[] | { error : string}>
 }
 
 export {IRafflesInterface};
