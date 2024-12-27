@@ -12,7 +12,7 @@ model Usuario {
   nome_completo     String
   data_nascimento   DateTime?  
   email             String    @unique
-  telefone          String    @unique
+  telefone          String?    @unique
   endereco          String?
   senha             String
   foto_perfil       String?   @db.Text

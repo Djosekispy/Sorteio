@@ -21,17 +21,16 @@ class AprovaEntitiesService implements IAproveEntities {
             return { error : 'Algo Inesperado : ' + error }
         }
     }
-   async changeUserStatus(id : number, status : TipoPerfil,idOrder : number) : Promise<IUsuario | { error : string }>
+   async changeUserStatus(status : TipoPerfil,idOrder : number) : Promise<IUsuario | { error : string }>
    {
     try {
-        const user = await Usuario.findById(id)
         const order = await Pedido.findById(idOrder)
-        if(!user || !order){
+        if(!order){
             return { error : 'Usuário Não existe'}
         }
-        await Usuario.update(id,{tipo_perfil : status})
+        await Usuario.update(order.usuarioId,{tipo_perfil : status})
         await Pedido.update(idOrder,{estado : 'aceite'})
-        return await Usuario.findById(id) as IUsuario
+        return await Usuario.findById(order.usuarioId) as IUsuario
     } catch (error) {
         return { error : 'Algo Inesperado : ' + error }
     }

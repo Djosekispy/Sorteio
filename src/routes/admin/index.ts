@@ -15,7 +15,7 @@ adminRouter.get('/logout',getUserIdFromToken, authAdminController.logout);
 
 //Rotas de Administração (Aprovação de Entidades)
 adminRouter.get("/entity-requests/:status", authenticateTokenAdmin, aproveEntitiesController.showChengeStatusOrders);
-adminRouter.post("/entity-requests/:id/:idOrder/approve",authenticateTokenAdmin, aproveEntitiesController.AproveStatusOrders);
+adminRouter.post("/entity-requests/:idOrder/approve",authenticateTokenAdmin, aproveEntitiesController.AproveStatusOrders);
 adminRouter.post("/entity-requests/:id/:idOrder/reject",authenticateTokenAdmin, aproveEntitiesController.RejectStatusOrders);
 adminRouter.get('/users/:id',userController.showOneUser);
 

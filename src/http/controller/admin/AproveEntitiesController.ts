@@ -25,9 +25,9 @@ class AproveEntitiesController {
     };
 
     AproveStatusOrders = async (req: Request, res: Response) => {
-        const { id, idOrder } = req.params;
+        const {idOrder } = req.params;
 
-        const result = await this.aprovaEntitiesService.changeUserStatus(parseInt(id), 'sorteador', parseInt(idOrder));
+        const result = await this.aprovaEntitiesService.changeUserStatus('sorteador', parseInt(idOrder));
         
         if ('error' in result) {
             return res.status(400).json({ message: result.error });

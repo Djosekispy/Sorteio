@@ -14,8 +14,8 @@ class AuthService implements IAuthUser {
         dados.senha = bcrypt.hashSync(dados.senha,10)
         const registerUser = new Usuario(dados);
         const userEmailExistis = await Usuario.findByEmail(dados.email)
-        const userPhoneNumberExistis = await Usuario.findByPhoneNumber(dados.telefone)
-        if(userEmailExistis || userPhoneNumberExistis ){
+       // const userPhoneNumberExistis = await Usuario.findByPhoneNumber(dados.telefone)
+        if(userEmailExistis){
             return { error : "Ops! Tente outros dados"}
         }
         await registerUser.save();
