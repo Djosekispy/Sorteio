@@ -1,81 +1,61 @@
-import { PrismaClient } from '@prisma/client';
-import dayjs from 'dayjs';
+import prisma from "../config/database";
+import { notifyParticipants } from "./notifyParticipants";
 
-const prisma = new PrismaClient();
-
-const performDailyDraw = async () => {
+export const performDailyDraw = async (): Promise<any> => {
     try {
-        const today = dayjs().startOf('day').toDate();
-
         const sorteios = await prisma.sorteio.findMany({
             where: {
-                data_realizacao: today,
-                status: 'corrente'
+                status: 'corrente',
+                data_realizacao: new Date(),
             },
             include: {
                 categorias: {
                     include: {
-                        itens: {
-                            include: {
-                                inscricoes: {
-                                    where: { estado_candidatura: 'aprovado' }
-                                }
-                            }
-                        }
+                        itens: { include: { inscricoes: true } },
+                    },
+                },
+            },
+        });
+
+        const resultados = [];
+
+        for (const sorteio of sorteios) {
+            const winners: Array<{ id: number; usuarioId: number }> = [];
+
+            for (const categoria of sorteio.categorias) {
+                for (const item of categoria.itens) {
+                    const approved = item.inscricoes.filter(
+                        inscricao => inscricao.estado_candidatura === 'aprovado'
+                    );
+
+                    if (approved.length > 0) {
+                        const winner =
+                            approved[Math.floor(Math.random() * approved.length)];
+                        
+                        await prisma.inscricao.update({
+                            where: { id: winner.id },
+                            data: { estado_candidatura: 'ganho' },
+                        });
+
+                        winners.push({ id: winner.id, usuarioId: winner.usuarioId });
                     }
                 }
             }
-        });
 
-        if (!sorteios || sorteios.length === 0) {
-            console.log('Nenhum sorteio agendado para hoje.');
-            return { message: 'Nenhum sorteio agendado para hoje.' };
+            const notificationResult = await notifyParticipants(winners);
+            console.log('Resultado da notificação:', notificationResult);
+
+            await prisma.sorteio.update({
+                where: { id: sorteio.id },
+                data: { status: 'finalizado' },
+            });
+
+            resultados.push({ sorteioId: sorteio.id, winners });
         }
 
-        const results : { sorteioId: number; categorias: never[]}[]  = [];
-
-        await prisma.$transaction(async (tx) => {
-            for (const sorteio of sorteios) {
-                const sorteioResult = { sorteioId: sorteio.id, categorias: [] };
-
-                for (const categoria of sorteio.categorias) {
-                    const categoriaResult = { categoriaId: categoria.id, winners:[] };
-
-                    for (const item of categoria.itens) {
-                        const { inscricoes } = item;
-
-                        if (inscricoes.length > 0) {
-                            const winner = inscricoes[Math.floor(Math.random() * inscricoes.length)];
-                            await tx.inscricao.update({
-                                where: { id: winner.id },
-                                data: { estado_candidatura: 'ganho' }
-                            });
-
-                            (categoriaResult.winners as any).push({
-                                itemId: item.id,
-                                inscricaoId: winner.id,
-                                usuarioId: winner.usuarioId
-                            });
-                        }
-                    }
-
-                    (sorteioResult.categorias as any).push(categoriaResult);
-                }
-                await tx.sorteio.update({
-                    where: { id: sorteio.id },
-                    data: { status: 'finalizado' }
-                });
-
-                results.push(sorteioResult);
-            }
-        });
-
-        console.log('Sorteio diário concluído:', results);
-        return { message: 'Sorteio diário concluído.', results };
+        return resultados;
     } catch (error) {
-        console.error('Erro ao realizar o sorteio diário:', error);
-        return { error: 'Algo deu errado: ' + error };
+        console.error('Erro ao realizar sorteio:', error);
+        return { error: 'Erro ao realizar sorteio.' };
     }
 };
-
-export default performDailyDraw;
