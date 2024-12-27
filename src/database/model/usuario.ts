@@ -58,7 +58,7 @@ class Usuario {
   }
 
   static async findById(id: number) {
-    return await prisma.usuario.findUnique({ where: { id } });
+    return await prisma.usuario.findUnique({ where: { id }, include : { documentos : true} });
   }
 
   static async findByEmail(email: string) {

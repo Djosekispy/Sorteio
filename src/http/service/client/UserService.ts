@@ -1,6 +1,10 @@
+import { IDocumentos } from "../../../database/entities/IDocumentos";
 import { IInscricoes } from "../../../database/entities/IInscricoes";
+import { INotificacao } from "../../../database/entities/INotificacao";
 import { IUsuario } from "../../../database/entities/IUsuario";
+import Documento from "../../../database/model/documentos";
 import Inscricao from "../../../database/model/inscricoes";
+import Notificacao from "../../../database/model/notificacao";
 import Pedido from "../../../database/model/pedido";
 import Usuario from "../../../database/model/usuario";
 import { IUser } from "../../interface/client/user.interface";
@@ -65,7 +69,36 @@ class UserService implements IUser {
             return { error : 'Algo deu errado '  + error }
         }
     }
+ async  getNotifications(userId : number) : Promise<INotificacao[]> {
+    return await Notificacao.findByUserId(userId)
+ }
 
+ async   loadDocuments(data : IDocumentos) : Promise<any | { error : string}> {
+    try {
+        const user = await Usuario.findById(data.usuarioId)
+        if(!user){
+            return { error : 'Usuário não existe'}
+        }
+        const saveDocument = new  Documento(data);
+        await saveDocument.save();
+        return saveDocument;
+    } catch (error) {
+        return { error : 'Algo deu errado '  + error }
+ }
+}
+
+async updateDocument(id : number,data : IDocumentos) : Promise<any | { error : string}> {
+    try {
+        const user = await Documento.findById(id)
+        if(!user){
+            return { error : 'Registro  não existe'}
+        }
+        await Documento.update(id,data);
+        return await Documento.findById(id) ;
+    } catch (error) {
+        return { error : 'Algo deu errado '  + error }
+ }
+}
 }
 
 

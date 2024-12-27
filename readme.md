@@ -245,9 +245,9 @@ Rotas para gerenciar as notificações enviadas aos vencedores dos sorteios.
 # Tarefas
 
 - Função pra realizar sorteio - x
-- Editar sorteio, categoria e Item
+- Editar sorteio, categoria e Item - x
 - Fazer upload de documentos importantes
-- Pesquisar sorteios
-- ver notificações
+- Pesquisar sorteios - x
+- ver notificações - x
 - Enviar feedback
-- Actualizar senha
+- Actualizar senha - x

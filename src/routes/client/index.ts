@@ -3,6 +3,7 @@ import { getUserIdFromToken } from '../../http/middleware/getIdFromToken';
 import { authController, categoryController, complaintController, itemController, rafflesController, userController } from '../../http/controller/client';
 import { authenticateToken } from '../../http/middleware/token';
 import { uploadFileMiddleware } from '../../http/middleware/upload';
+import { uploadDocumentsMiddleware } from '../../http/middleware/uploadDocuments';
 
 const rotasDoCliente = express.Router();
 
@@ -21,6 +22,9 @@ rotasDoCliente.put('/users/me',authenticateToken, getUserIdFromToken, userContro
 rotasDoCliente.put('/users/photo',authenticateToken, getUserIdFromToken,uploadFileMiddleware,userController.updateUserPhoto);
 rotasDoCliente.post('/users/request-entity',authenticateToken, getUserIdFromToken, userController.changeProfileStatus);
 rotasDoCliente.get('/users/me/participations',authenticateToken, getUserIdFromToken, userController.getHistory);
+rotasDoCliente.get('/users/:userId/notifications',authenticateToken, getUserIdFromToken, userController.getNotifications);
+rotasDoCliente.post('/user/document',authenticateToken, getUserIdFromToken,uploadDocumentsMiddleware, userController.loadDocuments);
+rotasDoCliente.put('/user/document',authenticateToken, getUserIdFromToken,uploadDocumentsMiddleware, userController.updateDocument);
 
 //Rotas para sorteio
 rotasDoCliente.post('/raffles',authenticateToken, getUserIdFromToken,uploadFileMiddleware, rafflesController.save);

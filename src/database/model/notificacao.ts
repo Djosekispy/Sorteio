@@ -44,6 +44,9 @@ class Notificacao {
   static async delete(id: number) {
     return await prisma.item.delete({ where: { id } });
   }
+  static async findByUserId(userId: number) {
+    return await prisma.notificacao.findMany({ where: { usuarioId : userId } });
+  }
 }
 
 export default Notificacao;

@@ -72,8 +72,39 @@ class UserController {
         })
     }
 
-
+    getNotifications = async(req: IGetUserAuthInfoRequest, res:Response)=>{
+        const userId = req.userId
+        const notifications = await this.userService.getNotifications(userId as number);
+        return res.status(201).json({
+            message : 'Notificações',
+            notifications
+        })
+    }
     
+    loadDocuments = async(req: Request, res:Response)=>{
+        const data = req.body
+        const document = await this.userService.loadDocuments(data);
+        if('error' in document){
+            return res.status(404).json({message : document.error})
+        }
+        return res.status(201).json({
+            message : 'Documento carregado com sucesso',
+            document
+        })
+    }
+
+    updateDocument = async(req: Request, res:Response)=>{
+        const { id } = req.params
+        const data = req.body
+        const document = await this.userService.updateDocument(parseInt(id),data);
+        if('error' in document){
+            return res.status(404).json({message : document.error})
+        }
+        return res.status(201).json({
+            message : 'Documento actualizado com sucesso',
+            document
+        })
+    }
 }
 
 export default UserController;
