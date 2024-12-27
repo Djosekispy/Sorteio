@@ -1,21 +1,9 @@
-import prisma from "../config/database";
 import { notifyParticipants } from "./notifyParticipants";
+import JobsRepositoryInstance from "./repositoryJobs/JobsRepository";
 
 export const performDailyDraw = async (): Promise<any> => {
     try {
-        const sorteios = await prisma.sorteio.findMany({
-            where: {
-                status: 'corrente',
-                data_realizacao: new Date(),
-            },
-            include: {
-                categorias: {
-                    include: {
-                        itens: { include: { inscricoes: true } },
-                    },
-                },
-            },
-        });
+        const sorteios = await JobsRepositoryInstance.getCurrentRaffles();
 
         const resultados = [];
 
@@ -32,11 +20,8 @@ export const performDailyDraw = async (): Promise<any> => {
                         const winner =
                             approved[Math.floor(Math.random() * approved.length)];
                         
-                        await prisma.inscricao.update({
-                            where: { id: winner.id },
-                            data: { estado_candidatura: 'ganho' },
-                        });
-
+                           await JobsRepositoryInstance.updateWinnerStatus(winner.id, 'ganho');
+                 
                         winners.push({ id: winner.id, usuarioId: winner.usuarioId });
                     }
                 }
@@ -45,11 +30,7 @@ export const performDailyDraw = async (): Promise<any> => {
             const notificationResult = await notifyParticipants(winners);
             console.log('Resultado da notificação:', notificationResult);
 
-            await prisma.sorteio.update({
-                where: { id: sorteio.id },
-                data: { status: 'finalizado' },
-            });
-
+            await JobsRepositoryInstance.updateRaffleStatus(sorteio.id, 'finalizado');
             resultados.push({ sorteioId: sorteio.id, winners });
         }
 
