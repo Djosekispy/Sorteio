@@ -324,7 +324,20 @@ async updateCandidateStatus(inscricaoId:number,status:EstadoCandidatura) : Promi
         return { error : 'Algo deu errado : ' + error}
     }
 }
+
+async searchRaffle(string : string) : Promise<ISorteio[] | { error : string}> {
+    try {
+        const raffles = await Sorteio.findAll();
+        const search = raffles.filter(item => item.nome.includes(string))
+        if(!search){
+            return { error : 'Nenhum sorteio encontrado'}
+        }
+        return search as ISorteio[]
+    } catch (error) {
+        return { error : 'Algo deu errado : ' + error }
+   }
 }
 
+}
 
 export default RefflesService;

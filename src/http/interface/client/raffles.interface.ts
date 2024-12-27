@@ -15,6 +15,7 @@ interface IRafflesInterface {
     participate(sorteioId : number,ItemId:number,userId: number) : Promise<IInscricoes[] | { error : string}>
     cancelParticipation(inscricaoId:number,userId:number) : Promise<IInscricoes[] | { error : string}>
     updateCandidateStatus(inscricaoId:number,status:EstadoCandidatura) : Promise<IInscricoes[] | { error : string}>
+    searchRaffle(string : string) : Promise<ISorteio[] | { error : string}>;
 }
 
 export {IRafflesInterface};

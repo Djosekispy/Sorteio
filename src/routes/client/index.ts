@@ -34,6 +34,7 @@ rotasDoCliente.get('/raffles/:sorteioId/winners',authenticateToken, getUserIdFro
 rotasDoCliente.post('/raffles/:sorteioId/participate',authenticateToken, getUserIdFromToken, rafflesController.participate);
 rotasDoCliente.delete('/raffles/:inscricaoId/participate',authenticateToken, getUserIdFromToken, rafflesController.cancelParticipation);
 rotasDoCliente.post('/raffles/update-candidate',authenticateToken, getUserIdFromToken, rafflesController.updateCandidateStatus);
+rotasDoCliente.get('/raffles/search/:string',rafflesController.searchRaffle);
 
 //Rotas para categorias
 rotasDoCliente.post('/categories',authenticateToken, getUserIdFromToken, categoryController.saveCategory);

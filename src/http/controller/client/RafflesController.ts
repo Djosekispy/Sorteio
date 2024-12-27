@@ -117,6 +117,15 @@ class RafflesController {
         result
     });
    }
+    searchRaffle = async (req : Request, res : Response) => {
+     const {string} = req.params;
+     const result = await this.rafflesService.searchRaffle(string);
+     if('error' in result) return res.status(400).json({message : result.error});
+     return res.status(200).json({
+          message : 'Sorteios encontrados',
+          result
+     });
+    }
 }
 
 export default RafflesController;

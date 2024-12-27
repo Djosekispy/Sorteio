@@ -242,3 +242,12 @@ Rotas para gerenciar as notificações enviadas aos vencedores dos sorteios.
 
 - **Mensageria e E-mails**: Rotas relacionadas a notificações e sorteios devem se integrar com serviços de envio de email (ex.: **nodemailer** ou um serviço de terceiros como **SendGrid**).
 
+# Tarefas
+
+- Função pra realizar sorteio
+- Editar sorteio, categoria e Item
+- Fazer upload de documentos importantes
+- Pesquisar sorteios
+- ver notificações
+- Enviar feedback
+- Actualizar senha
