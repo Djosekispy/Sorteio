@@ -12,7 +12,7 @@ const initializeJobs = () => {
     console.log('Tarefas agendadas inicializadas');
 };
 
-const NotifyCreatorsForCnadidates = ()=>{
+const NotifyCreatorsForCandidates = ()=>{
     cron.schedule('0 8 * * 1', async () => {
         console.log('Iniciando notificação semanal para organizadores de sorteios...');
         const resultado = await notifyDrawCreators();
@@ -20,4 +20,4 @@ const NotifyCreatorsForCnadidates = ()=>{
     });
 } 
 
-export  { initializeJobs, NotifyCreatorsForCnadidates };
+export  { initializeJobs, NotifyCreatorsForCandidates };

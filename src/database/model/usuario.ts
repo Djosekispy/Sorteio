@@ -62,11 +62,11 @@ class Usuario {
   }
 
   static async findByEmail(email: string) {
-    return await prisma.usuario.findUnique({ where: { email } });
+    return await prisma.usuario.findUnique({ where: { email } , include : { documentos : true} });
   }
 
   static async findByPhoneNumber(telefone: string) {
-    return await prisma.usuario.findUnique({ where: { telefone } });
+    return await prisma.usuario.findUnique({ where: { telefone }, include : { documentos : true }});
   }
 
   static async update(id: number, data: Partial<Usuario>) {

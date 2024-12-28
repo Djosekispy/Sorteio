@@ -81,8 +81,9 @@ class UserController {
         })
     }
     
-    loadDocuments = async(req: Request, res:Response)=>{
+    loadDocuments = async(req: IGetUserAuthInfoRequest, res:Response)=>{
         const data = req.body
+        data.usuarioId = req.userId;
         const document = await this.userService.loadDocuments(data);
         if('error' in document){
             return res.status(404).json({message : document.error})
@@ -93,9 +94,10 @@ class UserController {
         })
     }
 
-    updateDocument = async(req: Request, res:Response)=>{
+    updateDocument = async(req: IGetUserAuthInfoRequest, res:Response)=>{
         const { id } = req.params
         const data = req.body
+        data.usuarioId = req.userId;
         const document = await this.userService.updateDocument(parseInt(id),data);
         if('error' in document){
             return res.status(404).json({message : document.error})
