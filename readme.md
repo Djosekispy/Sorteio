@@ -1,4 +1,4 @@
-# Sorteios API - Documentação Completa
+# Sorteios API
 
 Bem-vindo à documentação do sistema de sorteios! Este projeto é um sistema completo para criar e gerenciar sorteios de forma segura e eficiente, oferecendo funcionalidades para diferentes perfis de usuários: administradores, entidades e participantes. Este repositório está aberto à colaboração de desenvolvedores para expandir suas funcionalidades. Contribua e ajude-nos a melhorar!
 
