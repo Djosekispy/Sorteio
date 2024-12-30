@@ -18,6 +18,7 @@ const NotifyCreatorsForCandidates = ()=>{
         const resultado = await notifyDrawCreators();
         console.log('Resultado da notificação semanal:', resultado);
     });
+    
 } 
 
 export  { initializeJobs, NotifyCreatorsForCandidates };

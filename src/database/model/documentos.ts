@@ -39,7 +39,9 @@ class Documento {
   static async findById(id: number) {
     return await prisma.documento.findUnique({ where: { id }, include :{ usuario : true} });
   }
-
+  static async findByUserId(id: number){
+      return await prisma.documento.findMany({ where: {usuarioId: id }, include :{ usuario : true} });
+  }
   static async update(id: number, data: Partial<Documento>) {
     return await prisma.documento.update({ where: { id }, data });
   }

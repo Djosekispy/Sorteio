@@ -48,6 +48,38 @@ import prisma from "../../config/database";
             },
         });
   }
+  async findParticipants (raffleId : number) {
+    return await prisma.inscricao.findMany({
+      include: {
+        usuario: true,
+        item: {
+          include: {
+            inscricoes: true,
+            categoria: {
+              include: {
+                sorteio: {
+                  select: {
+                    id: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      where: {
+        item: {
+          categoria: {
+            sorteioId: raffleId
+          }
+        }
+      }
+    });
+  }
+
+  async findRaffle (raffleId : number) {
+    return await prisma.sorteio.findUnique({ where: { id: raffleId } });
+  }
 }
 
 const JobsRepositoryInstance = new JobsRepository();

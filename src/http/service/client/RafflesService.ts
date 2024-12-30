@@ -12,6 +12,7 @@ import IEntitiesRepository from "../../repositoryInterfaces/IEntitiesRepository"
 import { EstadoCandidatura, EstadoNotificacao } from "@prisma/client";
 import Notificacao from "../../../database/model/notificacao";
 import Categoria from "../../../database/model/categoria";
+import NotifyParticipantsForRafflesUpdates from "../../utils/notifyParticipantsForRafflesUpdate";
 
 class RefflesService implements IRafflesInterface {
 
@@ -43,6 +44,7 @@ class RefflesService implements IRafflesInterface {
          return { error : 'Você não tem permissão para actualizar este sorteio'}
         }
         await Sorteio.update(sorteioId,data)
+        await NotifyParticipantsForRafflesUpdates(sorteioId);
         return await Sorteio.findById(sorteioId) as ISorteio
     } catch (error) {
         return { error : 'Algo deu errado : ' + error }
@@ -169,21 +171,17 @@ class RefflesService implements IRafflesInterface {
             winners.push(...winner);
         }
 
-        // Criar o PDF em memória
         const doc = new PDFDocument();
         const chunks: Buffer[] = [];
 
-        // Coletar chunks do PDF
         doc.on('data', (chunk) => chunks.push(chunk));
 
-        // Cabeçalho
         doc.fontSize(16);
         doc.text('Resultado do Sorteio', {
             align: 'center'
         });
         doc.moveDown();
 
-        // Informações do sorteio
         doc.fontSize(12);
         doc.text(`Nome do Sorteio: ${raffle.nome}`, {
             align: 'left'
@@ -192,15 +190,11 @@ class RefflesService implements IRafflesInterface {
             align: 'left'
         });
         doc.moveDown();
-
-        // Lista de vencedores
         doc.fontSize(14);
         doc.text('Lista de Vencedores:', {
             align: 'left'
         });
         doc.moveDown();
-
-        // Detalhes dos vencedores
         doc.fontSize(10);
         winners.forEach((winner, index) => {
             doc.text(`${index + 1}. Inscrição #${winner.id}`, {
@@ -217,14 +211,11 @@ class RefflesService implements IRafflesInterface {
             });
             doc.moveDown();
         });
-
-        // Rodapé
         doc.fontSize(8);
         doc.text(`Documento gerado em ${new Date().toLocaleString()}`, {
             align: 'center'
         });
 
-        // Finalizar o PDF e fazer upload para o Firebase
         return new Promise((resolve, reject) => {
             doc.on('end', async () => {
                 try {
@@ -232,20 +223,15 @@ class RefflesService implements IRafflesInterface {
                     const fileName = `winners-${sorteioId}-${uuidv4()}.pdf`;
                     const fileRef = ref(storagebucket, `pdfs/winners/${fileName}`);
                     
-                    // Upload do buffer para o Firebase
                     await uploadBytes(fileRef, pdfBuffer, {
                         contentType: 'application/pdf'
                     });
-
-                    // Obter a URL de download
                     const downloadURL = await getDownloadURL(fileRef);
                     resolve({ pdfUrl: downloadURL });
                 } catch (error) {
                     reject({ error: 'Erro ao fazer upload do PDF: ' + error });
                 }
             });
-
-            // Finalizar o documento
             doc.end();
         });
 

@@ -79,6 +79,10 @@ class UserService implements IUser {
         if(!user){
             return { error : 'Usuário não existe'}
         }
+        const findDocument  = await Documento.findByUserId(user.id)
+        if(findDocument.length > 0) {
+             return { error : 'Documentos já carregados! Tente actualiza-los'}
+        }
         const saveDocument = new  Documento(data);
         await saveDocument.save();
         return saveDocument;

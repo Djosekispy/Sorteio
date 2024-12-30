@@ -40,7 +40,7 @@ export const uploadDocumentsMiddleware = async (req: Request, res: Response, nex
         }
 
         if (!req.files) {
-            return  res.status(500).json({ message : 'Arquivos devm ser carregados.' });
+            return  res.status(500).json({ message : 'Arquivos devem ser carregados.' });
         }
 
         try {

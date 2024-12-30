@@ -2,6 +2,7 @@ import prisma from "../../config/database";
 import { IReclamacao } from "../entities/IReclamacao";
 
 class Reclamacao {
+
   id?: number;
   titulo: string;
   conteudo: string;
@@ -42,6 +43,10 @@ class Reclamacao {
   
   static async find() {
     return await prisma.reclamacao.findMany({include: {usuario: true, sorteio: true}});
+  }
+
+  static async findBySorteioId(id : number) {
+    return await prisma.reclamacao.findMany({where: {sorteioId: id}, include: {usuario: true, sorteio: true}});
   }
 
   static async findByUserId(userId: number) {

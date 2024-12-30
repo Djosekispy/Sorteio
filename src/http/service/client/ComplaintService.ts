@@ -37,11 +37,9 @@ class ComplaintsService implements IComplaint
 
     async getComplaintsByRaffle(raffleId: number) {
         try {
-            const complaints = await Reclamacao.findById(raffleId);
-            if (!complaints) {
-                return { error: "Nenhuma reclamação encontrada para este sorteio" };
-            }
-            return complaints;
+            const complaints = await Reclamacao.findBySorteioId(raffleId);
+            
+            return complaints as any;
         } catch (error) {
             return { error: "Erro ao buscar reclamações do sorteio" };
         }
